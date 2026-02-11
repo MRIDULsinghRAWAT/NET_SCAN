@@ -1,4 +1,5 @@
 #socket programming
+# single threaded scanner 
 import socket
 import sys
 from datetime import datetime
