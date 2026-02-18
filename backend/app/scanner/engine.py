@@ -39,3 +39,24 @@ def port_scan(port):
         pass
 
 # ... (worker aur run_scanner functions same rahenge) ...
+
+def worker():
+    while not queue.empty():
+        port = queue.get()
+        port_scan(port)
+        queue.task_done()
+
+def run_scanner():
+    print(f"Starting scan on {TARGET_IP}...")
+    for port in PORT_RANGE:
+        queue.put(port)
+
+    for _ in range(THREADS):
+        t = threading.Thread(target=worker)
+        t.start()
+
+    queue.join()
+    print(f"Scan complete. Final Results: {scan_results}")
+
+if __name__ == "__main__":
+    run_scanner()
