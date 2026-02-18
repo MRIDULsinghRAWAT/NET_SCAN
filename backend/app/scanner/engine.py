@@ -40,13 +40,14 @@ def port_scan(port):
 
 # ... (worker aur run_scanner functions same rahenge) ...
 
+# executioner
 def worker():
     while not queue.empty():
         port = queue.get()
         port_scan(port)
         queue.task_done()
 
-def run_scanner():
+def run_scanner():  # manager function to start the scanning process
     print(f"Starting scan on {TARGET_IP}...")
     for port in PORT_RANGE:
         queue.put(port)
@@ -58,5 +59,5 @@ def run_scanner():
     queue.join()
     print(f"Scan complete. Final Results: {scan_results}")
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # entry point
     run_scanner()
