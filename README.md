@@ -4,7 +4,9 @@ NET SCAN : Graph Intelligent Attack Path Analyzer
 Network Service Discovery and Security Assessment Tool
 
 
-## Project Structure 
+## Project Structure
+
+```text
 NET_SCAN/
 ├── backend/
 │   ├── app/
@@ -24,4 +26,3 @@ NET_SCAN/
 │   └── package.json         # Frontend dependencies
 ├── requirements.txt         # Backend dependencies
 └── README.md                # Project documentation
-
