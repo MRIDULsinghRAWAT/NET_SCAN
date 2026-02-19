@@ -75,8 +75,12 @@ if __name__ == "__main__":  # entry point
     run_scanner(args.target, args.start, args.end, args.threads)
     
     #The 4 Core Parameters of NetScan : 
-#Target IP (-t / --target): This is the mandatory input where the user defines which machine on the network is being audited. It ensures the tool doesn't scan aimlessly.
+#Target IP (-t / --target): This is the mandatory input where the user defines which machine on the network is being audited (a comprehensive inspection of a network's assets and services to identify security weaknesses and ensure everything is running safely).
+# It ensures the tool doesn't scan aimlessly.
+
 #Start Port (-s / --start): This defines the entry point of the scan. It defaults to port 1 if the user doesn't specify otherwise.
+
 #End Port (-e / --end): This sets the boundary or limit of the scan. It defaults to 1024, which covers most standard system service#s.
+
 #Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultan#eou
 
