@@ -5,7 +5,7 @@ import argparse # for command-line argument parsing, can be used to specify targ
 # for dynamic arguments 
 from queue import Queue
 
-# Configuration (Ab ye defaults ki tarah kaam karenge agar user parameters nahi deta)
+# Configuration (Ab ye defaults ki tarah kaam karenge agar user parameters nahi deta)  
 TARGET_IP = "192.168.1.1"  # machine by which we are scanning, can be changed to any IP
 PORT_RANGE = range(1, 1025)
 THREADS = 100  # can check 1000 ports with 100 threads
@@ -67,7 +67,7 @@ if __name__ == "__main__":  # entry point
     parser.add_argument("-t", "--target", help="Target IP Address", required=True)
     parser.add_argument("-s", "--start", help="Start Port", type=int, default=1)
     parser.add_argument("-e", "--end", help="End Port", type=int, default=1024)
-    parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100)
+    parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100) # default 100 threads, can be changed by the user depending on the need !
 
     args = parser.parse_args()
 
@@ -82,5 +82,6 @@ if __name__ == "__main__":  # entry point
 
 #End Port (-e / --end): This sets the boundary or limit of the scan. It defaults to 1024, which covers most standard system service#s.
 
-#Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultan#eou
+#Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultaneously 
+# 
 
