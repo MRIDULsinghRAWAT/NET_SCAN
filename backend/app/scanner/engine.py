@@ -1,5 +1,6 @@
 import socket
 import threading
+import argparse # for command-line argument parsing, can be used to specify target IP and port range
 from queue import Queue
 
 # Configuration
