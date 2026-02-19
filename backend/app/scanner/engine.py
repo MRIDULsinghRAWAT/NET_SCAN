@@ -1,10 +1,11 @@
 import socket
 import threading
-import argparse # for command-line argument parsing, can be used to specify target IP and port range
+import argparse # for command-line argument parsing, can be used to specify target IP and port range    
+# this (library) is useful for CMD -> creates a bridge btw user and code 
+# for dynamic arguments 
 from queue import Queue
 
-# Configuration
-# defining the target IP and port range for scanning
+# Configuration (Ab ye defaults ki tarah kaam karenge agar user parameters nahi deta)
 TARGET_IP = "192.168.1.1"  # machine by which we are scanning, can be changed to any IP
 PORT_RANGE = range(1, 1025)
 THREADS = 100  # can check 1000 ports with 100 threads
@@ -20,16 +21,16 @@ def get_banner(sock):   #THIS IS THE UNIQUE FEATURE
     try:
         # Kuch services ko trigger karne ke liye empty string bhejna padta hai
         sock.send(b'Hello\r\n') # sends a  knock to the service, sometimes required to get a response
-        banner = sock.recv(1024).decode(errors='ignore').strip() # BANNER GRABBING - service badle me apna naam aur version battai hai 
+        banner = sock.recv(1024).decode(errors='ignore').strip() # BANNER GRABBING - service badle me apna naam aur version battai hai
         return banner
     except:
         return "Unknown Service"
 
-def port_scan(port):
+def port_scan(target_ip, port): # target_ip ab parameter hai taaki ye dynamic rahe---
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1.5) # Banner grab ke liye thoda zyada time
-        result = sock.connect_ex((TARGET_IP, port))
+        sock.settimeout(1.5) # Banner grab ke liye thoda zyada time   # this is defining parameter for socket connection, if the service is slow to respond, it will wait for 1.5 seconds before giving up
+        result = sock.connect_ex((target_ip, port))
         
         if result == 0:  # if result is 0, port is open
             version = get_banner(sock)
@@ -39,26 +40,43 @@ def port_scan(port):
     except Exception:
         pass
 
-# ... (worker aur run_scanner functions same rahenge) ...
-
 # executioner
-def worker():
+def worker(target_ip): # worker ab target_ip leta hai
     while not queue.empty():
         port = queue.get()
-        port_scan(port)
+        port_scan(target_ip, port)
         queue.task_done()
 
-def run_scanner():  # manager function to start the scanning process
-    print(f"Starting scan on {TARGET_IP}...")
-    for port in PORT_RANGE:
+def run_scanner(target_ip, start_p, end_p, thread_count):  # manager function to start the scanning process
+    print(f"Starting scan on {target_ip}...")
+    for port in range(start_p, end_p + 1): # User defined range
         queue.put(port)
 
-    for _ in range(THREADS):
-        t = threading.Thread(target=worker)
+    for _ in range(thread_count): # User defined threads
+        t = threading.Thread(target=worker, args=(target_ip,))
         t.start()
 
     queue.join()
     print(f"Scan complete. Final Results: {scan_results}")
 
 if __name__ == "__main__":  # entry point
-    run_scanner()
+    # Mentor's requirement: Command-line arguments handle karne ke liye parser
+    parser = argparse.ArgumentParser(description="NetScan Proactive Scanner")
+    
+    # Adding parameters so others can use it easily
+    parser.add_argument("-t", "--target", help="Target IP Address", required=True)
+    parser.add_argument("-s", "--start", help="Start Port", type=int, default=1)
+    parser.add_argument("-e", "--end", help="End Port", type=int, default=1024)
+    parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100)
+
+    args = parser.parse_args()
+
+    # run_scanner ko ab terminal se aaye hue arguments ke saath call kiya
+    run_scanner(args.target, args.start, args.end, args.threads)
+    
+    #The 4 Core Parameters of NetScan
+#Target IP (-t / --target): This is the mandatory input where the user defines which machine on the network is being audited. It ensures the tool doesn't scan aimlessly.
+#Start Port (-s / --start): This defines the entry point of the scan. It defaults to port 1 if the user doesn't specify otherwise.
+#End Port (-e / --end): This sets the boundary or limit of the scan. It defaults to 1024, which covers most standard system service#s.
+#Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultan#eou
+
