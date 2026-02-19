@@ -74,7 +74,7 @@ if __name__ == "__main__":  # entry point
     # run_scanner ko ab terminal se aaye hue arguments ke saath call kiya
     run_scanner(args.target, args.start, args.end, args.threads)
     
-    #The 4 Core Parameters of NetScan : 
+    #The 4 Core Parameters of NetScan :
 #Target IP (-t / --target): This is the mandatory input where the user defines which machine on the network is being audited (a comprehensive inspection of a network's assets and services to identify security weaknesses and ensure everything is running safely).
 # It ensures the tool doesn't scan aimlessly.
 
