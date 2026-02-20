@@ -1,8 +1,10 @@
 import socket
 import threading
 import argparse # for command-line argument parsing, can be used to specify target IP and port range    
-# this (library) is useful for CMD -> creates a bridge btw user and code 
+# this (library) is useful for CMD -> creates a bridge btw user and code
 # for dynamic arguments 
+import json  # for savin results in a file 
+import os # for making folder to save results 
 from queue import Queue
 
 # Configuration (Ab ye defaults ki tarah kaam karenge agar user parameters nahi deta)  
@@ -46,6 +48,25 @@ def worker(target_ip): # worker ab target_ip leta hai
         port = queue.get()
         port_scan(target_ip, port)
         queue.task_done()
+        
+def save_results(target_ip):
+    """
+    Scan results ko JSON format mein save karta hai taaki Akshat use kar sake.
+    """
+    # Agar 'data' folder nahi hai toh bana do
+    if not os.path.exists('data'):
+        os.makedirs('data')
+        
+    output_data = {
+        "target": target_ip,
+        "discovered_services": scan_results
+    }
+    
+    file_path = "data/scan_output.json"
+    with open(file_path, "w") as f:
+        json.dump(output_data, f, indent=4) # Indent 4 se file readable banti hai
+    
+    print(f"\n[!] Results saved to {file_path}")
 
 def run_scanner(target_ip, start_p, end_p, thread_count):  # manager function to start the scanning process
     print(f"Starting scan on {target_ip}...")
@@ -57,6 +78,7 @@ def run_scanner(target_ip, start_p, end_p, thread_count):  # manager function to
         t.start()
 
     queue.join()
+    save_results(target_ip) # scan complete hone ke baad results save karna
     print(f"Scan complete. Final Results: {scan_results}")
 
 if __name__ == "__main__":  # entry point
@@ -70,7 +92,6 @@ if __name__ == "__main__":  # entry point
     parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100) # default 100 threads, can be changed by the user depending on the need !
 
     args = parser.parse_args()
-
     # run_scanner ko ab terminal se aaye hue arguments ke saath call kiya
     run_scanner(args.target, args.start, args.end, args.threads)
     
@@ -83,5 +104,5 @@ if __name__ == "__main__":  # entry point
 #End Port (-e / --end): This sets the boundary or limit of the scan. It defaults to 1024, which covers most standard system service#s.
 
 #Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultaneously 
-# 
+
 
