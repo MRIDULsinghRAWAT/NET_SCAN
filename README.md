@@ -55,10 +55,17 @@ python engine.py -t 127.0.0.1
 
 python engine.py -t 127.0.0.1 -s 1 -e 1000 -th 150
 
-Parameter,Full Name,Description
--t,--target,(Required) The IP address of the machine you want to audit.
--s,--start,Starting port number for the scan (Default: 1).
--e,--end,Ending port boundary for the scan (Default: 1024).
--th,--threads,Number of simultaneous threads for speed (Default: 100).
+### 🛠 CLI Arguments Breakdown
+
+| Parameter | Full Name | Description |
+| :--- | :--- | :--- |
+| `-t` | `--target` | **(Required)** The IP address of the machine you want to audit. |
+| `-s` | `--start` | Starting port number for the scan (Default: 1). |
+| `-e` | `--end` | Ending port boundary for the scan (Default: 1024). |
+| `-th` | `--threads` | Number of simultaneous threads for speed (Default: 100). |
+
+###  Output Location
+After the scan, the engine automatically persists the results in:
+`NET_SCAN/data/scan_output.json`
 
 ```
