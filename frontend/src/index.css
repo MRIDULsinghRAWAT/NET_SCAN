@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+body {
+  background-color: black;
+  color: white;
+  margin: 0;
+  /* Font ko bada aur clean karne ke liye */
+  font-family: 'Inter', sans-serif; 
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Saare links aur buttons ke liye global font size boost */
+h1 { font-size: 3.5rem !important; font-weight: 800 !important; letter-spacing: -0.05em; }
+h2 { font-size: 2rem !important; font-weight: 700 !important; }
+p { font-size: 1.25rem !important; line-height: 1.6; }
+button { font-size: 1.1rem !important; font-weight: 600 !important; }
