@@ -1,0 +1,7 @@
+Service,Port,Risk_Level,Potential_Vulnerability
+HTTP,80,Medium,Insecure Data Transfer
+HTTPS,443,Low,Secure but check SSL version
+SMB,445,High,Ransomware Target (WannaCry)
+SSH,22,Medium,Brute Force Risk
+MySQL,3306,High,SQL Injection Risk
+Unknown Service,Any,High,Unidentified Entry Point
