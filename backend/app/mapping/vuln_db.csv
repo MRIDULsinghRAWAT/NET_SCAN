@@ -5,3 +5,39 @@ SMB,445,High,Ransomware Target (WannaCry)
 SSH,22,Medium,Brute Force Risk
 MySQL,3306,High,SQL Injection Risk
 Unknown Service,Any,High,Unidentified Entry Point
+RDP,3389,Critical,Remote Desktop Exploit (BlueKeep/GoldBrute)
+FTP,21,High,Anonymous Login & Cleartext Credentials
+Telnet,23,Critical,Completely Unencrypted & High-Risk Access
+Redis,6379,High,Unauthenticated Remote Code Execution
+MongoDB,27017,High,NoSQL Injection & Data Leaking
+PostgreSQL,5432,Medium,Database Brute-Force Target
+VNC,5900,High,Remote Screen Spying & Control
+Docker API,2375,Critical,Remote Docker Container Escape/Infection
+Kubernetes API,6443,High,Unauthorized Cluster Access & Pod Control
+Elasticsearch,9200,High,Database Exposure & Data Leakage (Unauthenticated)
+Jenkins,8080,Medium,CI/CD Pipeline Access & Credential Theft
+Grafana,3000,Low,Monitoring Dashboard Exposure (Potential Data Leak)
+Memcached,11211,High,DDoS Amplification & Data Exposure
+Cassandra,9042,Medium,NoSQL Database Brute-Force Risk
+RabbitMQ,5672,Medium,Message Queue Exploitation & Data Leakage
+Redis,6379,High,Unauthenticated Remote Code Execution
+InfluxDB,8086,Medium,Time-Series Database Exposure & Data Leakage
+Zookeeper,2181,High,Unauthenticated Access & Data Leakage
+Kafka,9092,Medium,Message Broker Exploitation & Data Leakage
+CouchDB,5984,High,NoSQL Injection & Data Leakage
+VNC-HTTP,5800,High,Remote Desktop Access via Browser (Insecure)
+IPP (Printer),631,Low,Printer Spooler Vulnerability (PrintNightmare)
+UPnP,1900,Medium,Universal Plug and Play - Potential NAT Bypass
+MQTT,1883,High,IoT Communication Leakage (Unencrypted)
+CoAP,5683,Medium,Constrained IoT Protocol - DDoS Vector
+LDAP,389,High,Active Directory Information Leakage
+Rsync,873,High,Unauthenticated File Synchronization/Theft
+Oracle DB,1521,High,Database TNS Listener Vulnerability
+SAP Router,3299,Critical,Unauthorized Access to SAP Infrastructure
+BitTorrent,6881,Low,P2P File Sharing - Policy Violation
+Zookeeper,2181,Medium,Unauthenticated Distributed Configuration Access
+Kibana,5601,Medium,Data Visualization Exposure (Elastic Stack)
+AirPlay,5000,Low,Unprotected Media Streaming
+IPMI,623,Critical,Remote Hardware Control & Password Hash Leak
+
+
