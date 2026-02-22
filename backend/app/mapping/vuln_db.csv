@@ -20,9 +20,8 @@ Grafana,3000,Low,Monitoring Dashboard Exposure (Potential Data Leak)
 Memcached,11211,High,DDoS Amplification & Data Exposure
 Cassandra,9042,Medium,NoSQL Database Brute-Force Risk
 RabbitMQ,5672,Medium,Message Queue Exploitation & Data Leakage
-Redis,6379,High,Unauthenticated Remote Code Execution
 InfluxDB,8086,Medium,Time-Series Database Exposure & Data Leakage
-Zookeeper,2181,High,Unauthenticated Access & Data Leakage
+Zookeeper,2181,High,Unauthenticated Access & Distributed Config Leak
 Kafka,9092,Medium,Message Broker Exploitation & Data Leakage
 CouchDB,5984,High,NoSQL Injection & Data Leakage
 VNC-HTTP,5800,High,Remote Desktop Access via Browser (Insecure)
@@ -35,9 +34,6 @@ Rsync,873,High,Unauthenticated File Synchronization/Theft
 Oracle DB,1521,High,Database TNS Listener Vulnerability
 SAP Router,3299,Critical,Unauthorized Access to SAP Infrastructure
 BitTorrent,6881,Low,P2P File Sharing - Policy Violation
-Zookeeper,2181,Medium,Unauthenticated Distributed Configuration Access
 Kibana,5601,Medium,Data Visualization Exposure (Elastic Stack)
 AirPlay,5000,Low,Unprotected Media Streaming
 IPMI,623,Critical,Remote Hardware Control & Password Hash Leak
-
-
