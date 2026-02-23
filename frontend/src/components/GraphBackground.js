@@ -1,8 +1,9 @@
-import React, { useMemo, useRef, useEffect } from 'react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 
 const GraphBackground = () => {
   const graphRef = useRef();
+  const [dimensions, setDimensions] = useState({ width: typeof window !== 'undefined' ? window.innerWidth : 800, height: typeof window !== 'undefined' ? window.innerHeight : 600 });
 
   const graphData = useMemo(() => {
     const nodes = [];
@@ -41,12 +42,23 @@ const GraphBackground = () => {
     graphRef.current.d3Force('center', null);
   }, []);
 
+  useEffect(() => {
+    // Resize handler to make canvas fill viewport
+    const onResize = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-0 bg-black">
+    <div className="fixed inset-0 z-0 bg-black pointer-events-none">
       <ForceGraph2D
         ref={graphRef}
         graphData={graphData}
         backgroundColor="#000000"
+        // force graph to explicitly size to viewport
+        width={dimensions.width}
+        height={dimensions.height}
+        style={{ width: '100vw', height: '100vh' }}
         
         // Lines styling: Ekdum patli aur halki
         linkColor={(link) => link.isCritical ? "rgba(255, 0, 0, 0.4)" : "rgba(255, 255, 255, 0.015)"}

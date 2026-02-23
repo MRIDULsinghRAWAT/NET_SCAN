@@ -1,4 +1,7 @@
 {
-    "target": "192.168.56.101",
-    "discovered_services": {}
+    "target": "127.0.0.1",
+    "discovered_services": {
+        "135": "Unknown Service",
+        "445": "Unknown Service"
+    }
 }
