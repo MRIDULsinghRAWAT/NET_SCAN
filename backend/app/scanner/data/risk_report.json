@@ -1,0 +1,16 @@
+{
+    "target": "127.0.0.1",
+    "total_risks": 2,
+    "analysis": [
+        {
+            "port": "135",
+            "service": "Unknown Service",
+            "risk_level": "High"
+        },
+        {
+            "port": "445",
+            "service": "Unknown Service",
+            "risk_level": "High"
+        }
+    ]
+}
