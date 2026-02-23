@@ -53,31 +53,45 @@ def save_results(target_ip):
     """
     Scan results ko JSON format mein save karta hai taaki Akshat use kar sake.
     """
-    # Agar 'data' folder nahi hai toh bana do
-    if not os.path.exists('data'):
-        os.makedirs('data')
-        
+    # Ensure we write into the scanner/data folder relative to this file
+    scanner_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(scanner_dir, 'data')
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+
     output_data = {
         "target": target_ip,
         "discovered_services": scan_results
     }
-    
-    file_path = "data/scan_output.json"
+
+    file_path = os.path.join(data_dir, "scan_output.json")
     with open(file_path, "w") as f:
-        json.dump(output_data, f, indent=4) # Indent 4 se file readable banti hai
-    
+        json.dump(output_data, f, indent=4)
+
     print(f"\n[!] Results saved to {file_path}")
 
 def run_scanner(target_ip, start_p, end_p, thread_count):  # manager function to start the scanning process
-    print(f"Starting scan on {target_ip}...")
+    # Reset results and queue for fresh run
+    global queue, scan_results
+    queue = Queue()
+    scan_results = {}
+
+    print(f"Starting scan on {target_ip} from port {start_p} to {end_p} using {thread_count} threads...")
     for port in range(start_p, end_p + 1): # User defined range
         queue.put(port)
 
-    for _ in range(thread_count): # User defined threads
+    threads = []
+    for _ in range(max(1, thread_count)):
         t = threading.Thread(target=worker, args=(target_ip,))
+        t.daemon = True
         t.start()
+        threads.append(t)
 
     queue.join()
+    # Wait briefly for threads to finish cleanup
+    for t in threads:
+        t.join(timeout=0.1)
+
     save_results(target_ip) # scan complete hone ke baad results save karna
     print(f"Scan complete. Final Results: {scan_results}")
 

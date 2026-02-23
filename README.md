@@ -55,7 +55,7 @@ python engine.py -t 127.0.0.1
 
 python engine.py -t 127.0.0.1 -s 1 -e 1000 -th 150
 
-### 🛠 CLI Arguments Breakdown
+###  CLI Arguments Breakdown
 
 | Parameter | Full Name | Description |
 | :--- | :--- | :--- |
