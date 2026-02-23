@@ -32,7 +32,7 @@ const Hero = () => {
       <div className="relative z-10 text-center px-4">
         {/* Project Branding */}
         <h1 className="text-6xl md:text-8xl font-black text-white mb-4 tracking-tighter uppercase">
-          NET_SCAN : <span className="text-gray-600">ATTACK PATH</span>
+          NET_SCAN : <span className="text-gray-600">Graph Intelligent Attack Path Analyzer</span>
         </h1>
         <p className="text-xl text-gray-400 font-bold mb-10 tracking-[0.3em] uppercase">
           Mridul | Shiva | Akshat
