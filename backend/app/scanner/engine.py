@@ -15,17 +15,58 @@ THREADS = 100  # can check 1000 ports with 100 threads
 queue = Queue()
 # Hum list ki jagah Dictionary use karenge taaki metadata (Version) store ho sake
 scan_results = {} 
+# Try to import streamer for live events (optional)
+try:
+    from scanner import streamer
+except Exception:
+    try:
+        from . import streamer
+    except Exception:
+        streamer = None
 
-def get_banner(sock):   #THIS IS THE UNIQUE FEATURE
+def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
     """
     Attempts to grab the service version banner from an open port.
+    Strategy:
+      1. Try to recv() immediately (some services send a greeting)
+      2. If nothing received, send a light probe and recv again
+      3. If still nothing, fall back to a small port->service-name mapping
     """
     try:
-        # Kuch services ko trigger karne ke liye empty string bhejna padta hai
-        sock.send(b'Hello\r\n') # sends a  knock to the service, sometimes required to get a response
-        banner = sock.recv(1024).decode(errors='ignore').strip() # BANNER GRABBING - service badle me apna naam aur version battai hai
-        return banner
-    except:
+        # try to read any immediate banner
+        try:
+            banner = sock.recv(1024).decode(errors='ignore').strip()
+            if banner:
+                return banner
+        except Exception:
+            # ignore and try sending a probe
+            pass
+
+        # send a small probe and try to read
+        try:
+            sock.send(b'Hello\r\n')
+        except Exception:
+            pass
+
+        try:
+            banner = sock.recv(1024).decode(errors='ignore').strip()
+            if banner:
+                return banner
+        except Exception:
+            pass
+
+        # Fallback: map common ports to service names so UI is more informative
+        common = {
+            21: 'FTP', 22: 'SSH', 23: 'TELNET', 25: 'SMTP', 53: 'DNS',
+            80: 'HTTP', 110: 'POP3', 143: 'IMAP', 443: 'HTTPS', 3306: 'MySQL',
+            3389: 'RDP', 5900: 'VNC', 135: 'RPC', 139: 'NetBIOS-SSN', 445: 'SMB',
+            1433: 'MSSQL', 5901: 'VNC'
+        }
+        if port and port in common:
+            return common[port]
+
+        return "Unknown Service"
+    except Exception:
         return "Unknown Service"
 
 def port_scan(target_ip, port): # target_ip ab parameter hai taaki ye dynamic rahe---
@@ -35,9 +76,15 @@ def port_scan(target_ip, port): # target_ip ab parameter hai taaki ye dynamic ra
         result = sock.connect_ex((target_ip, port))
         
         if result == 0:  # if result is 0, port is open
-            version = get_banner(sock)
+            version = get_banner(sock, port)
             print(f"[+] Port {port} is OPEN | Service: {version}")
             scan_results[port] = version
+            # Push partial result to streamer if available
+            try:
+                if streamer:
+                    streamer.push_event(target_ip, {"type": "port", "port": port, "service": version})
+            except Exception:
+                pass
         sock.close()  # otherwise the port is closed, we just ignore it
     except Exception:
         pass
@@ -67,6 +114,14 @@ def save_results(target_ip):
     file_path = os.path.join(data_dir, "scan_output.json")
     with open(file_path, "w") as f:
         json.dump(output_data, f, indent=4)
+
+    # Push final/complete event and close stream if streamer available
+    try:
+        if streamer:
+            streamer.push_event(target_ip, {"type": "complete", "target": target_ip, "discovered_services": scan_results})
+            streamer.close_stream(target_ip)
+    except Exception:
+        pass
 
     print(f"\n[!] Results saved to {file_path}")
 

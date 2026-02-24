@@ -1,7 +1,7 @@
 {
-    "target": "127.0.0.1",
+    "target": "127.0.0.90",
     "discovered_services": {
-        "135": "Unknown Service",
-        "445": "Unknown Service"
+        "135": "RPC",
+        "445": "SMB"
     }
 }
