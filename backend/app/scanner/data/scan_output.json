@@ -1,5 +1,5 @@
 {
-    "target": "127.0.0.90",
+    "target": "127.0.0.1",
     "discovered_services": {
         "135": "RPC",
         "445": "SMB"
