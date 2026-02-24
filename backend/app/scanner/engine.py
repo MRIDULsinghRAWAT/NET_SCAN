@@ -1,30 +1,76 @@
 import socket
 import threading
-import argparse # for command-line argument parsing, can be used to specify target IP and port range    
-# this (library) is useful for CMD -> creates a bridge btw user and code
-# for dynamic arguments 
-import json  # for savin results in a file 
-import os # for making folder to save results 
-from queue import Queue
+import argparse  # for command-line argument parsing
+import json  # for saving results in a file
+import os  # for making folder to save results
+from queue import Queue, Empty
 
-# Configuration (Ab ye defaults ki tarah kaam karenge agar user parameters nahi deta)  
-TARGET_IP = "192.168.1.1"  # machine by which we are scanning, can be changed to any IP
+# Configuration defaults
+TARGET_IP = "192.168.1.1"
 PORT_RANGE = range(1, 1025)
-THREADS = 100  # can check 1000 ports with 100 threads
+THREADS = 100
 
-queue = Queue()
-# Hum list ki jagah Dictionary use karenge taaki metadata (Version) store ho sake
-scan_results = {} 
 # Try to import streamer for live events (optional)
+streamer = None
 try:
-    from scanner import streamer
+    from scanner import streamer as _streamer
+    streamer = _streamer
 except Exception:
     try:
-        from . import streamer
+        from . import streamer as _streamer
+        streamer = _streamer
     except Exception:
         streamer = None
 
-def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
+
+class ScanContext:
+    """Encapsulates all state for a single scan run.
+    
+    This avoids issues with module-level globals being shared
+    across sequential or concurrent scans.
+    """
+    def __init__(self, target_ip, start_port, end_port, thread_count):
+        self.target_ip = target_ip
+        self.start_port = start_port
+        self.end_port = end_port
+        self.thread_count = thread_count
+        self.queue = Queue()
+        self.scan_results = {}
+        self.results_lock = threading.Lock()
+        self.cancelled = False  # flag to stop workers early
+
+
+# Reference to the currently active scan context (if any)
+_active_scan_lock = threading.Lock()
+_active_scan = None  # type: ScanContext | None
+
+
+def cancel_active_scan():
+    """Cancel any currently running scan so a new one can start cleanly."""
+    global _active_scan
+    with _active_scan_lock:
+        if _active_scan is not None:
+            _active_scan.cancelled = True
+            # Drain and poison the queue so waiting workers unblock
+            try:
+                while not _active_scan.queue.empty():
+                    try:
+                        _active_scan.queue.get_nowait()
+                        _active_scan.queue.task_done()
+                    except Empty:
+                        break
+            except Exception:
+                pass
+            # Put enough sentinels to wake all possible workers
+            for _ in range(max(1, _active_scan.thread_count + 5)):
+                try:
+                    _active_scan.queue.put(None)
+                except Exception:
+                    pass
+            _active_scan = None
+
+
+def get_banner(sock, port=None):
     """
     Attempts to grab the service version banner from an open port.
     Strategy:
@@ -35,11 +81,13 @@ def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
     try:
         # try to read any immediate banner
         try:
+            sock.settimeout(1.0)
             banner = sock.recv(1024).decode(errors='ignore').strip()
             if banner:
                 return banner
+        except socket.timeout:
+            pass
         except Exception:
-            # ignore and try sending a probe
             pass
 
         # send a small probe and try to read
@@ -49,9 +97,12 @@ def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
             pass
 
         try:
+            sock.settimeout(1.0)
             banner = sock.recv(1024).decode(errors='ignore').strip()
             if banner:
                 return banner
+        except socket.timeout:
+            pass
         except Exception:
             pass
 
@@ -60,7 +111,8 @@ def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
             21: 'FTP', 22: 'SSH', 23: 'TELNET', 25: 'SMTP', 53: 'DNS',
             80: 'HTTP', 110: 'POP3', 143: 'IMAP', 443: 'HTTPS', 3306: 'MySQL',
             3389: 'RDP', 5900: 'VNC', 135: 'RPC', 139: 'NetBIOS-SSN', 445: 'SMB',
-            1433: 'MSSQL', 5901: 'VNC'
+            1433: 'MSSQL', 5901: 'VNC', 8080: 'HTTP-Proxy', 8443: 'HTTPS-Alt',
+            5000: 'Flask/HTTP', 3000: 'Node/HTTP'
         }
         if port and port in common:
             return common[port]
@@ -69,36 +121,61 @@ def get_banner(sock, port=None):   #THIS IS THE UNIQUE FEATURE
     except Exception:
         return "Unknown Service"
 
-def port_scan(target_ip, port): # target_ip ab parameter hai taaki ye dynamic rahe---
+
+def port_scan(ctx, port):
+    """Scan a single port on the target in the given ScanContext."""
+    if ctx.cancelled:
+        return
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1.5) # Banner grab ke liye thoda zyada time   # this is defining parameter for socket connection, if the service is slow to respond, it will wait for 1.5 seconds before giving up
-        result = sock.connect_ex((target_ip, port))
-        
-        if result == 0:  # if result is 0, port is open
+        sock.settimeout(1.5)
+        result = sock.connect_ex((ctx.target_ip, port))
+
+        if result == 0:  # port is open
             version = get_banner(sock, port)
             print(f"[+] Port {port} is OPEN | Service: {version}")
-            scan_results[port] = version
+            with ctx.results_lock:
+                ctx.scan_results[str(port)] = version
             # Push partial result to streamer if available
             try:
                 if streamer:
-                    streamer.push_event(target_ip, {"type": "port", "port": port, "service": version})
+                    streamer.push_event(ctx.target_ip, {"type": "port", "port": port, "service": version})
             except Exception:
                 pass
-        sock.close()  # otherwise the port is closed, we just ignore it
+        sock.close()
+    except socket.timeout:
+        pass
     except Exception:
         pass
 
-# executioner
-def worker(target_ip): # worker ab target_ip leta hai
-    while not queue.empty():
-        port = queue.get()
-        port_scan(target_ip, port)
-        queue.task_done()
-        
-def save_results(target_ip):
+
+def worker(ctx):
+    """Worker thread: pulls ports from the context queue until a sentinel (None) is received."""
+    while not ctx.cancelled:
+        try:
+            port = ctx.queue.get(timeout=2)
+        except Empty:
+            # Queue might be empty (scan is finishing), check if there's still work
+            if ctx.queue.empty():
+                break
+            continue
+
+        if port is None:
+            # Sentinel value — this worker should stop
+            ctx.queue.task_done()
+            break
+
+        try:
+            port_scan(ctx, port)
+        except Exception:
+            pass
+        finally:
+            ctx.queue.task_done()
+
+
+def save_results(ctx):
     """
-    Scan results ko JSON format mein save karta hai taaki Akshat use kar sake.
+    Save scan results to JSON file.
     """
     # Ensure we write into the scanner/data folder relative to this file
     scanner_dir = os.path.dirname(os.path.abspath(__file__))
@@ -106,9 +183,12 @@ def save_results(target_ip):
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 
+    with ctx.results_lock:
+        results_snapshot = dict(ctx.scan_results)
+
     output_data = {
-        "target": target_ip,
-        "discovered_services": scan_results
+        "target": ctx.target_ip,
+        "discovered_services": results_snapshot
     }
 
     file_path = os.path.join(data_dir, "scan_output.json")
@@ -118,60 +198,73 @@ def save_results(target_ip):
     # Push final/complete event and close stream if streamer available
     try:
         if streamer:
-            streamer.push_event(target_ip, {"type": "complete", "target": target_ip, "discovered_services": scan_results})
-            streamer.close_stream(target_ip)
+            streamer.push_event(ctx.target_ip, {"type": "complete", "target": ctx.target_ip, "discovered_services": results_snapshot})
+            streamer.close_stream(ctx.target_ip)
     except Exception:
         pass
 
     print(f"\n[!] Results saved to {file_path}")
 
-def run_scanner(target_ip, start_p, end_p, thread_count):  # manager function to start the scanning process
-    # Reset results and queue for fresh run
-    global queue, scan_results
-    queue = Queue()
-    scan_results = {}
+
+def run_scanner(target_ip, start_p, end_p, thread_count):
+    """Manager function to start the scanning process."""
+    global _active_scan
+
+    # Cancel any previously running scan
+    cancel_active_scan()
+
+    # Create a fresh, isolated scan context
+    ctx = ScanContext(target_ip, start_p, end_p, thread_count)
+
+    with _active_scan_lock:
+        _active_scan = ctx
 
     print(f"Starting scan on {target_ip} from port {start_p} to {end_p} using {thread_count} threads...")
-    for port in range(start_p, end_p + 1): # User defined range
-        queue.put(port)
 
+    # Fill the queue with ports to scan
+    for port in range(start_p, end_p + 1):
+        ctx.queue.put(port)
+
+    # Add sentinel values (None) for each worker so they know when to stop
+    effective_threads = max(1, thread_count)
+    for _ in range(effective_threads):
+        ctx.queue.put(None)
+
+    # Start worker threads
     threads = []
-    for _ in range(max(1, thread_count)):
-        t = threading.Thread(target=worker, args=(target_ip,))
+    for _ in range(effective_threads):
+        t = threading.Thread(target=worker, args=(ctx,))
         t.daemon = True
         t.start()
         threads.append(t)
 
-    queue.join()
-    # Wait briefly for threads to finish cleanup
+    # Wait for all work to complete
+    ctx.queue.join()
+
+    # Wait for threads to finish cleanup
     for t in threads:
-        t.join(timeout=0.1)
+        t.join(timeout=3)
 
-    save_results(target_ip) # scan complete hone ke baad results save karna
-    print(f"Scan complete. Final Results: {scan_results}")
+    if not ctx.cancelled:
+        save_results(ctx)
+        with ctx.results_lock:
+            print(f"Scan complete. Final Results: {ctx.scan_results}")
+    else:
+        print(f"Scan on {target_ip} was cancelled.")
 
-if __name__ == "__main__":  # entry point
-    # Mentor's requirement: Command-line arguments handle karne ke liye parser
+    # Clear active scan reference
+    with _active_scan_lock:
+        if _active_scan is ctx:
+            _active_scan = None
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="NetScan Proactive Scanner")
-    
-    # Adding parameters so others can use it easily
+
     parser.add_argument("-t", "--target", help="Target IP Address", required=True)
     parser.add_argument("-s", "--start", help="Start Port", type=int, default=1)
     parser.add_argument("-e", "--end", help="End Port", type=int, default=1024)
-    parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100) # default 100 threads, can be changed by the user depending on the need !
+    parser.add_argument("-th", "--threads", help="Threads count", type=int, default=100)
 
     args = parser.parse_args()
-    # run_scanner ko ab terminal se aaye hue arguments ke saath call kiya
     run_scanner(args.target, args.start, args.end, args.threads)
-    
-    #The 4 Core Parameters of NetScan :
-#Target IP (-t / --target): This is the mandatory input where the user defines which machine on the network is being audited (a comprehensive inspection of a network's assets and services to identify security weaknesses and ensure everything is running safely).
-# It ensures the tool doesn't scan aimlessly.
-
-#Start Port (-s / --start): This defines the entry point of the scan. It defaults to port 1 if the user doesn't specify otherwise.
-
-#End Port (-e / --end): This sets the boundary or limit of the scan. It defaults to 1024, which covers most standard system service#s.
-
-#Threads Count (-th / --threads): This manages the speed and concurrency. It defaults to 100, meaning 100 ports are checked simultaneously 
-
-

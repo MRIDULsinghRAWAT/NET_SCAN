@@ -19,6 +19,7 @@ DATA_PATH = os.path.join(BASE_DIR, 'scanner', 'data', 'scan_output.json')
 
 
 scan_thread = None
+scan_lock = threading.Lock()  # protects scan_thread and scan_state
 scan_state = {
     "running": False,
     "target": None,
@@ -63,10 +64,20 @@ def start_scan():
 
         print(f">>> Received scan request: {target} {start}-{end} threads={threads}")
 
-        # If a scan is already running, reject concurrent starts
         global scan_thread, scan_state
-        if scan_state["running"]:
-            return jsonify({"status": "error", "message": "A scan is already running", "target": scan_state.get("target")}), 409
+
+        # If a scan is already running, cancel it first so the new one can start
+        with scan_lock:
+            if scan_state["running"]:
+                print(f">>> Cancelling previous scan on {scan_state.get('target')}...")
+                engine.cancel_active_scan()
+                # Give old thread a moment to clean up
+                old_thread = scan_thread
+                if old_thread and old_thread.is_alive():
+                    old_thread.join(timeout=3)
+                scan_state["running"] = False
+                scan_thread = None
+
         # create an event stream for this target so clients can subscribe
         try:
             streamer.create_stream(target)
@@ -75,15 +86,27 @@ def start_scan():
 
         def _background_scan(tgt, s, e, th):
             try:
-                scan_state["running"] = True
-                scan_state["target"] = tgt
-                scan_state["started_at"] = time.time()
+                with scan_lock:
+                    scan_state["running"] = True
+                    scan_state["target"] = tgt
+                    scan_state["started_at"] = time.time()
                 engine.run_scanner(tgt, s, e, th)
+            except Exception as ex:
+                print(f">>> Scan error: {ex}")
+                # Ensure streamer sends a complete event even on error
+                try:
+                    streamer.push_event(tgt, {"type": "complete", "target": tgt, "discovered_services": {}, "error": str(ex)})
+                    streamer.close_stream(tgt)
+                except Exception:
+                    pass
             finally:
-                scan_state["running"] = False
+                with scan_lock:
+                    scan_state["running"] = False
+                    scan_state["target"] = None
 
-        scan_thread = threading.Thread(target=_background_scan, args=(target, start, end, threads), daemon=True)
-        scan_thread.start()
+        with scan_lock:
+            scan_thread = threading.Thread(target=_background_scan, args=(target, start, end, threads), daemon=True)
+            scan_thread.start()
 
         # Immediately return accepted — frontend can poll /api/scan-status and GET the results
         return jsonify({"status": "started", "target": target}), 202
@@ -93,12 +116,12 @@ def start_scan():
 
 @app.route('/api/scan-status', methods=['GET'])
 def scan_status():
-    global scan_state
-    return jsonify({
-        "running": bool(scan_state.get("running", False)),
-        "target": scan_state.get("target"),
-        "started_at": scan_state.get("started_at")
-    })
+    with scan_lock:
+        return jsonify({
+            "running": bool(scan_state.get("running", False)),
+            "target": scan_state.get("target"),
+            "started_at": scan_state.get("started_at")
+        })
 
 
 @app.route('/api/scan-stream', methods=['GET'])
