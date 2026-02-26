@@ -26,9 +26,12 @@ export const startScan = async ({ target, start, end, threads }) => {
  * Get the last saved scan results (GET).
  * GET /api/start-scan
  */
-export const getScanResults = async () => {
+export const getScanResults = async (target) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/start-scan`);
+    // If a target is provided, include it as a query param so backend
+    // can return per-target results (e.g. /api/start-scan?target=1.2.3.4)
+    const url = target ? `${API_BASE_URL}/api/start-scan?target=${encodeURIComponent(target)}` : `${API_BASE_URL}/api/start-scan`;
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error("Error fetching scan results:", error);

@@ -33,22 +33,57 @@ def start_scan():
     Supports GET (returns last saved scan_output.json) and
     POST (accepts JSON: { target, start, end, threads }) to run a new scan.
     """
-    # GET: just return existing file if present
+    # Ensure we refer to module-level scan state/thread variables
+    global scan_thread, scan_state
+
+    # GET: return existing file if present — normalize older formats
     if request.method == 'GET':
-        print(f">>> Flask is looking for file at: {DATA_PATH}")
+        # Allow callers to request per-target results: /api/start-scan?target=1.2.3.4
+        req_target = request.args.get('target')
         try:
+            if req_target:
+                # attempt to open per-target file
+                safe = str(req_target).replace(':', '_').replace('/', '_').replace(' ', '_')
+                per_target_file = os.path.join(os.path.dirname(DATA_PATH), f"scan_output_{safe}.json")
+                print(f">>> Flask: looking for per-target file at: {per_target_file}")
+                if os.path.exists(per_target_file):
+                    with open(per_target_file, 'r') as f:
+                        return jsonify(json.load(f))
+                # If not found, fall back to the generic file below
+
+            print(f">>> Flask is looking for file at: {DATA_PATH}")
             if not os.path.exists(DATA_PATH):
                 return jsonify({"error": f"File not found at {DATA_PATH}"}), 404
             with open(DATA_PATH, 'r') as f:
                 data = json.load(f)
-            return jsonify(data)
+
+            # Normalize legacy scan_output formats so frontend always sees
+            # { target: ..., discovered_services: { port: service } }
+            if isinstance(data, dict) and 'target' in data and 'discovered_services' in data:
+                return jsonify(data)
+
+            # Legacy scanner_script produced a 'vulnerabilities' list — wrap it
+            if isinstance(data, dict) and 'vulnerabilities' in data:
+                tgt = scan_state.get('target') or data.get('target') or 'unknown'
+                normalized = {
+                    'target': tgt,
+                    'discovered_services': {},
+                    'raw': data
+                }
+                return jsonify(normalized)
+
+            # Fallback: return object with raw data included so UI doesn't break
+            return jsonify({'target': scan_state.get('target') or 'unknown', 'discovered_services': {}, 'raw': data})
         except Exception as e:
             return jsonify({"status": "error", "message": str(e)}), 500
 
     # POST: run scan with provided params
     try:
         payload = request.get_json(force=True)
+        # Accept either 'target' or 'ip' keys; ensure it's a clean string
         target = payload.get('target') or payload.get('ip')
+        if target is not None:
+            target = str(target).strip()
         start = int(payload.get('start', 1))
         end = int(payload.get('end', 1024))
         threads = int(payload.get('threads', 100))
@@ -63,8 +98,6 @@ def start_scan():
             end = start
 
         print(f">>> Received scan request: {target} {start}-{end} threads={threads}")
-
-        global scan_thread, scan_state
 
         # If a scan is already running, cancel it first so the new one can start
         with scan_lock:
