@@ -1,0 +1,1300 @@
+{
+    "target": "127.0.0.5",
+    "scan_summary": {
+        "total_ports_scanned": 104,
+        "open_ports": 0,
+        "closed_ports": 104,
+        "filtered_ports": 0
+    },
+    "all_ports": {
+        "1": {
+            "port": 1,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "7": {
+            "port": 7,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "5": {
+            "port": 5,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "2": {
+            "port": 2,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "6": {
+            "port": 6,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "3": {
+            "port": 3,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "10": {
+            "port": 10,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "4": {
+            "port": 4,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "8": {
+            "port": 8,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "9": {
+            "port": 9,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "15": {
+            "port": 15,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "12": {
+            "port": 12,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "18": {
+            "port": 18,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "19": {
+            "port": 19,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "17": {
+            "port": 17,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "13": {
+            "port": 13,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "16": {
+            "port": 16,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "14": {
+            "port": 14,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "20": {
+            "port": 20,
+            "status": "closed",
+            "service": "FTP-DATA",
+            "vulnerabilities": [
+                "Unencrypted data transfer",
+                "Port predictable"
+            ]
+        },
+        "11": {
+            "port": 11,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "28": {
+            "port": 28,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "27": {
+            "port": 27,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "30": {
+            "port": 30,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "25": {
+            "port": 25,
+            "status": "closed",
+            "service": "SMTP",
+            "vulnerabilities": [
+                "Open relay potential",
+                "Banner grabbing"
+            ]
+        },
+        "23": {
+            "port": 23,
+            "status": "closed",
+            "service": "TELNET",
+            "vulnerabilities": [
+                "No encryption",
+                "Credentials in plaintext"
+            ]
+        },
+        "26": {
+            "port": 26,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "24": {
+            "port": 24,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "21": {
+            "port": 21,
+            "status": "closed",
+            "service": "FTP",
+            "vulnerabilities": [
+                "Unencrypted credentials",
+                "Bruteforce vulnerable"
+            ]
+        },
+        "22": {
+            "port": 22,
+            "status": "closed",
+            "service": "SSH",
+            "vulnerabilities": []
+        },
+        "29": {
+            "port": 29,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "34": {
+            "port": 34,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "35": {
+            "port": 35,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "31": {
+            "port": 31,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "36": {
+            "port": 36,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "38": {
+            "port": 38,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "39": {
+            "port": 39,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "40": {
+            "port": 40,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "33": {
+            "port": 33,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "37": {
+            "port": 37,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "32": {
+            "port": 32,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "50": {
+            "port": 50,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "41": {
+            "port": 41,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "46": {
+            "port": 46,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "47": {
+            "port": 47,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "42": {
+            "port": 42,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "45": {
+            "port": 45,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "48": {
+            "port": 48,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "44": {
+            "port": 44,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "49": {
+            "port": 49,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "43": {
+            "port": 43,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "59": {
+            "port": 59,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "51": {
+            "port": 51,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "60": {
+            "port": 60,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "55": {
+            "port": 55,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "52": {
+            "port": 52,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "54": {
+            "port": 54,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "53": {
+            "port": 53,
+            "status": "closed",
+            "service": "DNS",
+            "vulnerabilities": [
+                "Zone transfer possible",
+                "DDoS amplification"
+            ]
+        },
+        "57": {
+            "port": 57,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "58": {
+            "port": 58,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "56": {
+            "port": 56,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "70": {
+            "port": 70,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "68": {
+            "port": 68,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "65": {
+            "port": 65,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "69": {
+            "port": 69,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "62": {
+            "port": 62,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "67": {
+            "port": 67,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "64": {
+            "port": 64,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "63": {
+            "port": 63,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "66": {
+            "port": 66,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "61": {
+            "port": 61,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "72": {
+            "port": 72,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "79": {
+            "port": 79,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "80": {
+            "port": 80,
+            "status": "closed",
+            "service": "HTTP",
+            "vulnerabilities": [
+                "Unencrypted traffic",
+                "No HTTPS"
+            ]
+        },
+        "74": {
+            "port": 74,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "73": {
+            "port": 73,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "71": {
+            "port": 71,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "75": {
+            "port": 75,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "78": {
+            "port": 78,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "77": {
+            "port": 77,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "76": {
+            "port": 76,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "86": {
+            "port": 86,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "82": {
+            "port": 82,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "85": {
+            "port": 85,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "90": {
+            "port": 90,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "87": {
+            "port": 87,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "84": {
+            "port": 84,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "89": {
+            "port": 89,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "88": {
+            "port": 88,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "81": {
+            "port": 81,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "83": {
+            "port": 83,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "93": {
+            "port": 93,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "92": {
+            "port": 92,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "91": {
+            "port": 91,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "100": {
+            "port": 100,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "95": {
+            "port": 95,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "94": {
+            "port": 94,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "97": {
+            "port": 97,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "96": {
+            "port": 96,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "98": {
+            "port": 98,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "99": {
+            "port": 99,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "102": {
+            "port": 102,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "103": {
+            "port": 103,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "104": {
+            "port": 104,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "101": {
+            "port": 101,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        }
+    },
+    "open_ports": {},
+    "closed_ports": {
+        "1": {
+            "port": 1,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "7": {
+            "port": 7,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "5": {
+            "port": 5,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "2": {
+            "port": 2,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "6": {
+            "port": 6,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "3": {
+            "port": 3,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "10": {
+            "port": 10,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "4": {
+            "port": 4,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "8": {
+            "port": 8,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "9": {
+            "port": 9,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "15": {
+            "port": 15,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "12": {
+            "port": 12,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "18": {
+            "port": 18,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "19": {
+            "port": 19,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "17": {
+            "port": 17,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "13": {
+            "port": 13,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "16": {
+            "port": 16,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "14": {
+            "port": 14,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "20": {
+            "port": 20,
+            "status": "closed",
+            "service": "FTP-DATA",
+            "vulnerabilities": [
+                "Unencrypted data transfer",
+                "Port predictable"
+            ]
+        },
+        "11": {
+            "port": 11,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "28": {
+            "port": 28,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "27": {
+            "port": 27,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "30": {
+            "port": 30,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "25": {
+            "port": 25,
+            "status": "closed",
+            "service": "SMTP",
+            "vulnerabilities": [
+                "Open relay potential",
+                "Banner grabbing"
+            ]
+        },
+        "23": {
+            "port": 23,
+            "status": "closed",
+            "service": "TELNET",
+            "vulnerabilities": [
+                "No encryption",
+                "Credentials in plaintext"
+            ]
+        },
+        "26": {
+            "port": 26,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "24": {
+            "port": 24,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "21": {
+            "port": 21,
+            "status": "closed",
+            "service": "FTP",
+            "vulnerabilities": [
+                "Unencrypted credentials",
+                "Bruteforce vulnerable"
+            ]
+        },
+        "22": {
+            "port": 22,
+            "status": "closed",
+            "service": "SSH",
+            "vulnerabilities": []
+        },
+        "29": {
+            "port": 29,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "34": {
+            "port": 34,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "35": {
+            "port": 35,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "31": {
+            "port": 31,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "36": {
+            "port": 36,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "38": {
+            "port": 38,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "39": {
+            "port": 39,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "40": {
+            "port": 40,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "33": {
+            "port": 33,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "37": {
+            "port": 37,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "32": {
+            "port": 32,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "50": {
+            "port": 50,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "41": {
+            "port": 41,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "46": {
+            "port": 46,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "47": {
+            "port": 47,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "42": {
+            "port": 42,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "45": {
+            "port": 45,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "48": {
+            "port": 48,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "44": {
+            "port": 44,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "49": {
+            "port": 49,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "43": {
+            "port": 43,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "59": {
+            "port": 59,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "51": {
+            "port": 51,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "60": {
+            "port": 60,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "55": {
+            "port": 55,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "52": {
+            "port": 52,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "54": {
+            "port": 54,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "53": {
+            "port": 53,
+            "status": "closed",
+            "service": "DNS",
+            "vulnerabilities": [
+                "Zone transfer possible",
+                "DDoS amplification"
+            ]
+        },
+        "57": {
+            "port": 57,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "58": {
+            "port": 58,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "56": {
+            "port": 56,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "70": {
+            "port": 70,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "68": {
+            "port": 68,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "65": {
+            "port": 65,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "69": {
+            "port": 69,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "62": {
+            "port": 62,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "67": {
+            "port": 67,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "64": {
+            "port": 64,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "63": {
+            "port": 63,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "66": {
+            "port": 66,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "61": {
+            "port": 61,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "72": {
+            "port": 72,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "79": {
+            "port": 79,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "80": {
+            "port": 80,
+            "status": "closed",
+            "service": "HTTP",
+            "vulnerabilities": [
+                "Unencrypted traffic",
+                "No HTTPS"
+            ]
+        },
+        "74": {
+            "port": 74,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "73": {
+            "port": 73,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "71": {
+            "port": 71,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "75": {
+            "port": 75,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "78": {
+            "port": 78,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "77": {
+            "port": 77,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "76": {
+            "port": 76,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "86": {
+            "port": 86,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "82": {
+            "port": 82,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "85": {
+            "port": 85,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "90": {
+            "port": 90,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "87": {
+            "port": 87,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "84": {
+            "port": 84,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "89": {
+            "port": 89,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "88": {
+            "port": 88,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "81": {
+            "port": 81,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "83": {
+            "port": 83,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "93": {
+            "port": 93,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "92": {
+            "port": 92,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "91": {
+            "port": 91,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "100": {
+            "port": 100,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "95": {
+            "port": 95,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "94": {
+            "port": 94,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "97": {
+            "port": 97,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "96": {
+            "port": 96,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "98": {
+            "port": 98,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "99": {
+            "port": 99,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "102": {
+            "port": 102,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "103": {
+            "port": 103,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "104": {
+            "port": 104,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        },
+        "101": {
+            "port": 101,
+            "status": "closed",
+            "service": "Unknown",
+            "vulnerabilities": []
+        }
+    },
+    "filtered_ports": {},
+    "discovered_services": {}
+}

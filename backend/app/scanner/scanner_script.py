@@ -21,9 +21,17 @@ def run_network_scan():
         os.makedirs(DATA_DIR)
 
     output_path = os.path.join(DATA_DIR, "scan_output.json")
-    
+
+    # Write a normalized output format that the frontend expects while
+    # preserving the legacy "vulnerabilities" payload under 'raw'.
+    normalized = {
+        "target": "simulated-scan",
+        "discovered_services": {},
+        "raw": results
+    }
+
     with open(output_path, 'w') as f:
-        json.dump(results, f, indent=4)
+        json.dump(normalized, f, indent=4)
     print(f">>> Results saved successfully at: {output_path}")
 
 if __name__ == "__main__":

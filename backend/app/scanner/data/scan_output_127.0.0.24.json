@@ -1,0 +1,7 @@
+{
+    "target": "127.0.0.24",
+    "discovered_services": {
+        "135": "RPC",
+        "445": "SMB"
+    }
+}
