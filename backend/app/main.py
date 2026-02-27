@@ -5,6 +5,8 @@ import os
 
 from scanner import engine
 from scanner import streamer
+from mapping import analyzer
+from mapping import graph_gen
 import threading
 import time
 
@@ -123,12 +125,85 @@ def start_scan():
                     scan_state["running"] = True
                     scan_state["target"] = tgt
                     scan_state["started_at"] = time.time()
+
+                # STEP 1: Run the Port Scanner
                 engine.run_scanner(tgt, s, e, th)
+
+                # STEP 2: Intelligence Pipeline - After scan completes
+                print(f"\n>>> ========== INTELLIGENCE PIPELINE START ==========")
+                print(f">>> Analyzing scan results for {tgt}...")
+
+                # Read the scan results that were just saved
+                safe_target = tgt.replace(':', '_').replace('/', '_').replace(' ', '_')
+                per_target_file = os.path.join(os.path.dirname(DATA_PATH), f"scan_output_{safe_target}.json")
+
+                if os.path.exists(per_target_file):
+                    with open(per_target_file, 'r') as f:
+                        scan_data = json.load(f)
+
+                    # 2A: Risk Analysis
+                    print(f">>> [2A] Analyzing risk levels...")
+                    analyzed_data = analyzer.analyze_scan_results(scan_data)
+                    vuln_summary = analyzed_data.get('vulnerable_ports', {})
+                    print(f">>> Found {vuln_summary.get('critical', 0)} Critical, {vuln_summary.get('high', 0)} High, {vuln_summary.get('medium', 0)} Medium vulnerabilities")
+
+                    # Push risk analysis to frontend
+                    try:
+                        streamer.push_event(tgt, {
+                            "type": "analysis",
+                            "target": tgt,
+                            "analysis": analyzed_data,
+                            "timestamp": time.time()
+                        })
+                    except Exception as e:
+                        print(f">>> Error pushing analysis: {e}")
+
+                    # 2B: Attack Chain Detection
+                    print(f">>> [2B] Detecting attack chains...")
+                    attack_chains = analyzer.calculate_attack_chains(analyzed_data)
+                    print(f">>> Found {attack_chains.get('total_chains', 0)} potential attack chains")
+
+                    # 2C: Graph Generation
+                    print(f">>> [2C] Generating attack path graph...")
+                    graph_data = graph_gen.generate_attack_graph(analyzed_data, attack_chains)
+                    graph_stats = graph_data.get('statistics', {})
+                    print(f">>> Graph: {graph_stats.get('total_nodes', 0)} nodes, {graph_stats.get('total_edges', 0)} edges")
+
+                    # 2D: Network Exposure Calculation
+                    print(f">>> [2D] Calculating network exposure...")
+                    exposure = graph_gen.calculate_network_exposure(graph_data)
+                    print(f">>> Network Exposure Score: {exposure.get('exposure_score', 0)}/100 [{exposure.get('severity', 'UNKNOWN')}]")
+
+                    # Push complete intelligence package to frontend
+                    try:
+                        streamer.push_event(tgt, {
+                            "type": "graph",
+                            "target": tgt,
+                            "graph": graph_data,
+                            "exposure_score": exposure,
+                            "attack_chains": attack_chains,
+                            "timestamp": time.time()
+                        })
+                    except Exception as e:
+                        print(f">>> Error pushing graph: {e}")
+
+                    print(f">>> ========== INTELLIGENCE PIPELINE COMPLETE ==========\n")
+                else:
+                    print(f">>> ERROR: Could not find scan output at {per_target_file}")
+
             except Exception as ex:
-                print(f">>> Scan error: {ex}")
+                print(f">>> CRITICAL SCAN ERROR: {ex}")
+                import traceback
+                traceback.print_exc()
                 # Ensure streamer sends a complete event even on error
                 try:
-                    streamer.push_event(tgt, {"type": "complete", "target": tgt, "discovered_services": {}, "error": str(ex)})
+                    streamer.push_event(tgt, {
+                        "type": "complete",
+                        "target": tgt,
+                        "discovered_services": {},
+                        "error": str(ex),
+                        "timestamp": time.time()
+                    })
                     streamer.close_stream(tgt)
                 except Exception:
                     pass
