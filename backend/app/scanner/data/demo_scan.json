@@ -1,0 +1,50 @@
+{
+  "target": "127.0.0.1",
+  "scan_summary": {
+    "total_ports_scanned": 1024,
+    "open_ports": 5,
+    "closed_ports": 1019,
+    "filtered_ports": 0
+  },
+  "open_ports": {
+    "22": {
+      "port": 22,
+      "status": "open",
+      "service": "SSH",
+      "vulnerabilities": ["Brute force attacks"]
+    },
+    "80": {
+      "port": 80,
+      "status": "open",
+      "service": "HTTP",
+      "vulnerabilities": ["Unencrypted traffic"]
+    },
+    "3000": {
+      "port": 3000,
+      "status": "open",
+      "service": "Node.js/HTTP",
+      "vulnerabilities": ["Debug info exposure"]
+    },
+    "5000": {
+      "port": 5000,
+      "status": "open",
+      "service": "Flask/HTTP",
+      "vulnerabilities": ["Debug mode exposure"]
+    },
+    "3389": {
+      "port": 3389,
+      "status": "open",
+      "service": "RDP",
+      "vulnerabilities": ["Brute force attacks", "CVE-2019-0708"]
+    }
+  },
+  "closed_ports": {},
+  "filtered_ports": {},
+  "discovered_services": {
+    "22": "SSH",
+    "80": "HTTP",
+    "3000": "Node.js/HTTP",
+    "5000": "Flask/HTTP",
+    "3389": "RDP"
+  }
+}
