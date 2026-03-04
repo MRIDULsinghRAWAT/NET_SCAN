@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Scan data (generated at runtime)
+backend/app/scanner/data/scan_output_*.json
+
+# IDE
+.vscode/
+.idea/
+
+# Temp files
+nul
+tmpclaude-*
+*.tmp

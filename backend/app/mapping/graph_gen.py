@@ -18,6 +18,11 @@ def generate_attack_graph(analyzed_data, attack_chains):
         edges = []
         node_ids = {}  # port -> id mapping
 
+        # Kill Chain port classification (must match analyzer.py)
+        ENTRY_PORTS = {"21","23","80","443","8080","8443","3389","5900","5901","3000","5000"}
+        PIVOT_PORTS = {"22","25","135","139","445","110","143"}
+        TARGET_PORTS = {"53","1433","3306","5432","6379","27017"}
+
         # Extract services from analysis
         analysis = analyzed_data.get("analysis", [])
 
@@ -47,6 +52,17 @@ def generate_attack_graph(analyzed_data, attack_chains):
             color = color_map.get(risk_level, "#666666")
             size = size_map.get(risk_level, 10)
 
+            # Determine Kill Chain role
+            port_str = str(port)
+            if port_str in ENTRY_PORTS:
+                role = "entry"
+            elif port_str in PIVOT_PORTS:
+                role = "pivot"
+            elif port_str in TARGET_PORTS:
+                role = "target"
+            else:
+                role = "unknown"
+
             node_id = f"port_{port}"
             node_ids[port] = node_id
 
@@ -55,6 +71,7 @@ def generate_attack_graph(analyzed_data, attack_chains):
                 "port": port,
                 "service": service_name,
                 "risk": risk_level,
+                "role": role,
                 "color": color,
                 "size": size,
                 "label": f"{service_name}\n({port})",
