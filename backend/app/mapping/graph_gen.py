@@ -43,10 +43,10 @@ def generate_attack_graph(analyzed_data, attack_chains):
 
             # Size mapping based on risk
             size_map = {
-                "Critical": 15,
-                "High": 12,
-                "Medium": 10,
-                "Low": 8
+                "Critical": 24,
+                "High": 20,
+                "Medium": 16,
+                "Low": 13
             }
 
             color = color_map.get(risk_level, "#666666")

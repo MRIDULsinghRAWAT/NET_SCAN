@@ -19,8 +19,16 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
     console.log('>>> Edges count:', graphData.edges?.length);
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationId;
+
+    // Fix Canvas Aspect Ratio dynamically to prevent squashing
+    const parent = canvas.parentElement;
+    if (parent) {
+      canvas.width = parent.clientWidth;
+      canvas.height = parent.clientHeight;
+    }
 
     // Canvas setup
     const width = canvas.width;
@@ -36,12 +44,12 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
     if (!nodes.some(n => n.x !== undefined)) {
       const centerX = width / 2;
       const centerY = height / 2;
-      const radius = Math.min(width, height) * 0.3;
+      const radius = Math.min(width, height) * 0.38;
 
       nodes.forEach((node, i) => {
         const angle = (i / nodes.length) * Math.PI * 2;
-        node.x = centerX + Math.cos(angle) * radius + (Math.random() - 0.5) * 50;
-        node.y = centerY + Math.sin(angle) * radius + (Math.random() - 0.5) * 50;
+        node.x = centerX + Math.cos(angle) * radius + (Math.random() - 0.5) * 30;
+        node.y = centerY + Math.sin(angle) * radius + (Math.random() - 0.5) * 30;
         node.vx = 0;
         node.vy = 0;
       });
@@ -50,19 +58,19 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
     const simulation = () => {
       // Apply forces
       nodes.forEach((node, i) => {
-        // Stronger repulsion between nodes
+        // Strong repulsion between nodes — push them apart
         nodes.forEach((other, j) => {
           if (i !== j) {
             const dx = node.x - other.x;
             const dy = node.y - other.y;
             const dist = Math.hypot(dx, dy) || 1;
-            const force = 200 / (dist * dist + 100); // Increased force, with minimum distance
+            const force = 1000 / (dist * dist + 50);
             node.vx += (dx / dist) * force;
             node.vy += (dy / dist) * force;
           }
         });
 
-        // Attraction to edges
+        // Attraction to edges — spring force with longer rest length
         edges.forEach((edge) => {
           if (edge.from === node.id) {
             const toNode = nodes.find(n => n.id === edge.to);
@@ -70,7 +78,7 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
               const dx = toNode.x - node.x;
               const dy = toNode.y - node.y;
               const dist = Math.hypot(dx, dy) || 1;
-              const force = (dist - 100) * 0.1; // Spring force towards target distance of 100px
+              const force = (dist - 200) * 0.05;
               node.vx += (dx / dist) * force;
               node.vy += (dy / dist) * force;
             }
@@ -81,16 +89,16 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
               const dx = fromNode.x - node.x;
               const dy = fromNode.y - node.y;
               const dist = Math.hypot(dx, dy) || 1;
-              const force = (dist - 100) * 0.1;
+              const force = (dist - 200) * 0.05;
               node.vx += (dx / dist) * force;
               node.vy += (dy / dist) * force;
             }
           }
         });
 
-        // Gentle center attraction (not too strong)
-        node.vx += (width / 2 - node.x) * 0.01;
-        node.vy += (height / 2 - node.y) * 0.01;
+        // Very gentle center attraction — just enough to keep graph on screen
+        node.vx += (width / 2 - node.x) * 0.005;
+        node.vy += (height / 2 - node.y) * 0.005;
 
         // Damping
         node.vx *= 0.85;
@@ -101,7 +109,7 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         node.y += node.vy;
 
         // Boundary conditions with padding
-        const padding = 50;
+        const padding = 60;
         if (node.x < padding) node.x = padding;
         if (node.x > width - padding) node.x = width - padding;
         if (node.y < padding) node.y = padding;
@@ -270,25 +278,25 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-5 gap-2 text-xs">
-          <div className="bg-red-950/30 p-2 rounded border border-red-900/30">
-            <div className="text-red-400 font-bold">{stats.critical_services || 0}</div>
+        <div className="grid grid-cols-5 gap-2 text-xs mt-2">
+          <div className="bg-red-950/30 p-2 rounded border border-red-900/30 text-center">
+            <div className="text-red-400 font-bold text-base">{stats.critical_services || 0}</div>
             <div className="text-gray-500">Critical</div>
           </div>
-          <div className="bg-orange-950/30 p-2 rounded border border-orange-900/30">
-            <div className="text-orange-400 font-bold">{stats.high_risk_services || 0}</div>
+          <div className="bg-orange-950/30 p-2 rounded border border-orange-900/30 text-center">
+            <div className="text-orange-400 font-bold text-base">{stats.high_risk_services || 0}</div>
             <div className="text-gray-500">High Risk</div>
           </div>
-          <div className="bg-yellow-950/30 p-2 rounded border border-yellow-900/30">
-            <div className="text-yellow-400 font-bold">{stats.total_nodes || 0}</div>
+          <div className="bg-yellow-950/30 p-2 rounded border border-yellow-900/30 text-center">
+            <div className="text-yellow-400 font-bold text-base">{stats.total_nodes || 0}</div>
             <div className="text-gray-500">Services</div>
           </div>
-          <div className="bg-green-950/30 p-2 rounded border border-green-900/30">
-            <div className="text-green-400 font-bold">{stats.lateral_movement_paths || 0}</div>
+          <div className="bg-green-950/30 p-2 rounded border border-green-900/30 text-center">
+            <div className="text-green-400 font-bold text-base">{stats.lateral_movement_paths || 0}</div>
             <div className="text-gray-500">Lateral Paths</div>
           </div>
-          <div className="bg-blue-950/30 p-2 rounded border border-blue-900/30">
-            <div className="text-blue-400 font-bold">{stats.total_edges || 0}</div>
+          <div className="bg-blue-950/30 p-2 rounded border border-blue-900/30 text-center">
+            <div className="text-blue-400 font-bold text-base">{stats.total_edges || 0}</div>
             <div className="text-gray-500">Connections</div>
           </div>
         </div>
@@ -304,38 +312,38 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         />
 
         {/* Legend */}
-        <div className="absolute bottom-3 left-3 bg-black/80 border border-red-900/30 rounded p-3 text-xs">
-          <div className="text-red-400 font-bold mb-2">Risk Level:</div>
-          <div className="space-y-1">
+        <div className="absolute bottom-3 left-3 bg-black/80 border border-red-900/30 rounded p-4 text-sm">
+          <div className="text-red-400 font-bold mb-2 text-base">Risk Level:</div>
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-red-600 rounded-full"></div>
               <span className="text-gray-300">Critical</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
               <span className="text-gray-300">High Risk</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
               <span className="text-gray-300">Medium</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
               <span className="text-gray-300">Low</span>
             </div>
           </div>
-          <div className="text-cyan-400 font-bold mt-3 mb-2">Kill Chain Role:</div>
-          <div className="space-y-1">
+          <div className="text-cyan-400 font-bold mt-3 mb-2 text-base">Kill Chain Role:</div>
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-cyan-400"></div>
+              <div className="w-4 h-4 rounded-full border-2 border-cyan-400"></div>
               <span className="text-gray-300">Entry Point</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-yellow-400"></div>
+              <div className="w-4 h-4 rounded-full border-2 border-yellow-400"></div>
               <span className="text-gray-300">Pivot Node</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-purple-400"></div>
+              <div className="w-4 h-4 rounded-full border-2 border-purple-400"></div>
               <span className="text-gray-300">Target</span>
             </div>
           </div>
@@ -343,14 +351,14 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
 
         {/* Info Panel (Right Side) */}
         {hoveredNode && (
-          <div className="absolute top-3 right-3 bg-black/80 border border-green-900/30 rounded p-3 text-xs max-w-xs">
-            <div className="text-green-400 font-bold mb-2">{hoveredNode.service}</div>
+          <div className="absolute top-3 right-3 bg-black/80 border border-green-900/30 rounded p-4 text-sm max-w-xs">
+            <div className="text-green-400 font-bold mb-2 text-base">{hoveredNode.service}</div>
             <div className="space-y-1 text-gray-300">
               <div><span className="text-green-400">Port:</span> {hoveredNode.port}</div>
               <div><span className="text-green-400">Risk:</span> {hoveredNode.risk}</div>
               {hoveredNode.vulnerabilities && hoveredNode.vulnerabilities.length > 0 && (
                 <div className="mt-2">
-                  <div className="text-red-400 font-bold text-xs">Vulnerabilities:</div>
+                  <div className="text-red-400 font-bold">Vulnerabilities:</div>
                   {hoveredNode.vulnerabilities.map((v, i) => (
                     <div key={i} className="text-red-300">• {v}</div>
                   ))}
@@ -363,29 +371,29 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
 
       {/* Attack Chains List */}
       {attackChains && attackChains.chains && attackChains.chains.length > 0 && (
-        <div className="border-t border-red-900/30 p-4 bg-black/50 max-h-48 overflow-y-auto">
+        <div className="border-t border-red-900/30 p-5 bg-black/50 max-h-56 overflow-y-auto">
           {/* Kill Chain Classification Badges */}
           {attackChains.classification && (
-            <div className="flex gap-3 mb-3">
-              <div className="flex items-center gap-1 px-2 py-1 rounded bg-red-950/50 border border-red-800/40">
-                <span className="text-red-400 text-xs font-bold">⬤</span>
-                <span className="text-xs text-gray-300">{attackChains.classification.entry_points || 0} Entry Points</span>
+            <div className="flex gap-4 mb-4">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-red-950/50 border border-red-800/40">
+                <span className="text-red-400 text-sm font-bold">⬤</span>
+                <span className="text-sm text-gray-300">{attackChains.classification.entry_points || 0} Entry Points</span>
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded bg-yellow-950/50 border border-yellow-800/40">
-                <span className="text-yellow-400 text-xs font-bold">⬤</span>
-                <span className="text-xs text-gray-300">{attackChains.classification.pivot_nodes || 0} Pivot Nodes</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-yellow-950/50 border border-yellow-800/40">
+                <span className="text-yellow-400 text-sm font-bold">⬤</span>
+                <span className="text-sm text-gray-300">{attackChains.classification.pivot_nodes || 0} Pivot Nodes</span>
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded bg-purple-950/50 border border-purple-800/40">
-                <span className="text-purple-400 text-xs font-bold">⬤</span>
-                <span className="text-xs text-gray-300">{attackChains.classification.target_nodes || 0} Targets</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-purple-950/50 border border-purple-800/40">
+                <span className="text-purple-400 text-sm font-bold">⬤</span>
+                <span className="text-sm text-gray-300">{attackChains.classification.target_nodes || 0} Targets</span>
               </div>
             </div>
           )}
 
-          <div className="text-sm font-bold text-red-400 mb-2">Attack Chains ({attackChains.total_chains}):</div>
-          <div className="space-y-1 text-xs">
+          <div className="text-lg font-bold text-red-400 mb-3">Attack Chains ({attackChains.total_chains}):</div>
+          <div className="space-y-1.5 text-base">
             {attackChains.chains.slice(0, 8).map((chain, i) => (
-              <div key={i} className="text-gray-300 flex items-start gap-1" title={chain.description}>
+              <div key={i} className="text-gray-300 flex items-start gap-2" title={chain.description}>
                 <span className={`font-bold shrink-0 ${chain.type === 'lateral_movement' ? 'text-red-400' : 'text-orange-400'}`}>
                   {chain.type === 'lateral_movement' ? '⤷' : '↔'}
                 </span>
@@ -399,9 +407,9 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
 
           {/* Full Kill Chain Paths */}
           {attackChains.full_attack_paths && attackChains.full_attack_paths.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-red-900/20">
-              <div className="text-sm font-bold text-orange-400 mb-2">Kill Chain Paths:</div>
-              <div className="space-y-1 text-xs">
+            <div className="mt-4 pt-4 border-t border-red-900/20">
+              <div className="text-lg font-bold text-orange-400 mb-3">Kill Chain Paths:</div>
+              <div className="space-y-1.5 text-base">
                 {attackChains.full_attack_paths.slice(0, 3).map((path, i) => (
                   <div key={i} className="text-gray-300" title={path.description}>
                     <span className="text-cyan-400 font-mono">{path.name}</span>

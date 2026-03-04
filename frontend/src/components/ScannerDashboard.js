@@ -21,6 +21,7 @@ const ScannerDashboard = () => {
   const [attackChains, setAttackChains] = useState(null);
   const [analysisData, setAnalysisData] = useState(null);
   const [showGraph, setShowGraph] = useState(false);
+  const [showLateral, setShowLateral] = useState(false);
 
   // Refs to keep track of subscriptions / timers
   const eventSourceRef = useRef(null);
@@ -121,8 +122,8 @@ const ScannerDashboard = () => {
           setGraphData(obj.graph);
           setExposure(obj.exposure_score);
           setAttackChains(obj.attack_chains);
-          setShowGraph(true);  // AUTO-SHOW GRAPH!
-          console.log('>>> Graph tab activated automatically');
+          // Don't auto-switch — user clicks LATERAL MOVEMENT button
+          console.log('>>> Graph data ready, lateral movement button will appear');
         }
         else if (obj.type === 'complete') {
           setData((prev) => ({
@@ -183,6 +184,7 @@ const ScannerDashboard = () => {
     setAttackChains(null);
     setAnalysisData(null);
     setShowGraph(false);
+    setShowLateral(false);
     scanTargetRef.current = target;
 
     if (eventSourceRef.current) {
@@ -282,205 +284,181 @@ const ScannerDashboard = () => {
         onClick={startScan}
         disabled={loading}
         className={`px-10 py-4 font-bold rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg ${loading
-            ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-            : "bg-red-600 hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)]"
+          ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+          : "bg-red-600 hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)]"
           }`}
       >
         {loading ? ">>> SCANNING NETWORK..." : "LAUNCH SYSTEM SCAN"}
       </button>
 
-      {/* Terminal Display OR Graph View */}
+      {/* ====== INLINE GRAPH VIEW ====== */}
+      {graphData && (
+        <div className="mt-8 w-full max-w-7xl h-[350px] border border-red-900/40 bg-black/80 backdrop-blur-xl rounded-lg overflow-hidden shadow-2xl relative">
+          <GraphView graphData={graphData} exposure={exposure} attackChains={attackChains} />
+        </div>
+      )}
+
+      {/* Terminal Display */}
       <div className="mt-8 w-full max-w-7xl border border-red-900/40 bg-black/80 backdrop-blur-xl p-6 rounded-lg font-mono text-sm shadow-2xl relative overflow-hidden max-h-[85vh] flex flex-col">
 
-        {/* Tab Navigation */}
-        {graphData && (
-          <div className="flex gap-2 mb-4 border-b border-red-900/30 pb-3 flex-shrink-0">
-            <button
-              onClick={() => setShowGraph(false)}
-              className={`px-4 py-2 font-bold transition-all ${
-                !showGraph
-                  ? 'bg-red-600 text-white'
-                  : 'bg-zinc-900 text-gray-400 hover:text-white'
-              }`}
-            >
-              PORT RESULTS
-            </button>
-            <button
-              onClick={() => setShowGraph(true)}
-              className={`px-4 py-2 font-bold transition-all ${
-                showGraph
-                  ? 'bg-red-600 text-white'
-                  : 'bg-zinc-900 text-gray-400 hover:text-white'
-              }`}
-            >
-              ATTACK GRAPH
-            </button>
-          </div>
-        )}
-
         {/* Terminal Header */}
-        {!showGraph && (
-          <div className="flex justify-between mb-4 border-b border-red-900/30 pb-3 flex-shrink-0">
-            <p className="text-red-500 font-bold tracking-widest text-lg flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
-              SCAN RESULTS
-            </p>
-            <div className="flex gap-2 opacity-50">
-              <div className="w-2.5 h-2.5 bg-red-900 rounded-full"></div>
-              <div className="w-2.5 h-2.5 bg-red-700 rounded-full"></div>
-              <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-            </div>
+        <div className="flex justify-between mb-4 border-b border-red-900/30 pb-3 flex-shrink-0">
+          <p className="text-red-500 font-bold tracking-widest text-lg flex items-center gap-2">
+            <span className="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
+            SCAN RESULTS
+          </p>
+          <div className="flex gap-2 opacity-50">
+            <div className="w-2.5 h-2.5 bg-red-900 rounded-full"></div>
+            <div className="w-2.5 h-2.5 bg-red-700 rounded-full"></div>
+            <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
           </div>
-        )}
+        </div>
 
         {/* Content Area */}
         <div className="overflow-auto flex-1 text-red-500/90 custom-scrollbar pr-3">
-          {showGraph && graphData ? (
-            <GraphView graphData={graphData} exposure={exposure} attackChains={attackChains} />
-          ) : (
-            <>
-              {loading && (
-            <div className="animate-pulse space-y-2 text-sm">
-              <p>[...] Scanning network...</p>
-              <p>[...] Analyzing ports...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="text-white bg-red-600/30 border border-red-600 p-3 rounded text-sm font-bold">
-              ERROR: {error}
-            </div>
-          )}
-
-          {data && (
-            <div className="text-green-400 bg-green-950/10 rounded border border-green-900/30 p-3 space-y-3">
-
-              {/* Stats Bar */}
-              <div className="grid grid-cols-3 gap-4 text-sm pb-3 border-b border-green-900/20">
-                <div className="bg-green-950/20 p-2 rounded">
-                  <div className="text-green-300 font-bold text-lg">{data.scan_summary?.total_ports_scanned || 0}</div>
-                  <div className="text-xs text-green-500">Total Ports</div>
-                </div>
-                <div className="bg-green-950/20 p-2 rounded">
-                  <div className="text-green-400 font-bold text-lg">{data.scan_summary?.open_ports || 0}</div>
-                  <div className="text-xs text-green-500">Open Ports</div>
-                </div>
-                <div className="bg-green-950/20 p-2 rounded">
-                  <div className="text-yellow-400 font-bold text-lg">{data.scan_summary?.closed_ports || 0}</div>
-                  <div className="text-xs text-yellow-500">Closed + Filtered</div>
-                </div>
-                <div className="bg-blue-950/20 p-2 rounded">
-                  <div className="text-blue-400 font-bold text-lg">{data.target}</div>
-                  <div className="text-xs text-blue-500">Target IP</div>
-                </div>
-                <div className="bg-green-950/20 p-2 rounded col-span-2">
-                  <div className={`font-bold text-lg ${connectionStatus === 'connected' ? 'text-green-300' : connectionStatus === 'connecting' ? 'text-yellow-300' : 'text-red-300'}`}>{connectionStatus}</div>
-                  <div className="text-xs text-green-500">Connection Status</div>
-                </div>
+          <>
+            {loading && (
+              <div className="animate-pulse space-y-2 text-sm">
+                <p>[...] Scanning network...</p>
+                <p>[...] Analyzing ports...</p>
               </div>
+            )}
 
-              {/* Two Column Layout */}
-              <div className="grid grid-cols-2 gap-4">
+            {error && (
+              <div className="text-white bg-red-600/30 border border-red-600 p-3 rounded text-sm font-bold">
+                ERROR: {error}
+              </div>
+            )}
 
-                {/* LEFT COLUMN - Open Ports */}
-                {data.open_ports && Object.keys(data.open_ports).length > 0 && (
-                  <div className="border-l-2 border-green-500 pl-3 py-2">
-                    <strong className="text-green-300 text-base block mb-2">OPEN PORTS ({Object.keys(data.open_ports).length}):</strong>
-                    <div className="space-y-1.5 max-h-96 overflow-y-auto">
-                      {Object.entries(data.open_ports)
-                        .sort((a, b) => Number(a[0]) - Number(b[0]))
-                        .map(([p, info]) => {
-                          const portInfo = typeof info === 'string' ? { service: info, vulnerabilities: [] } : info;
-                          return (
-                            <div key={p} className="text-sm bg-green-950/40 p-2 rounded">
-                              <div className="flex justify-between items-center mb-1">
-                                <span className="text-green-300 font-bold text-base">{p}</span>
-                                <span className="text-green-400 text-xs font-bold">{portInfo.service || 'Unknown'}</span>
-                              </div>
-                              {portInfo.vulnerabilities && portInfo.vulnerabilities.length > 0 && (
-                                <div className="text-red-400 text-xs ml-2 space-y-0.5">
-                                  {portInfo.vulnerabilities.slice(0, 2).map((vuln, idx) => (
-                                    <div key={idx}>- {vuln}</div>
-                                  ))}
-                                  {portInfo.vulnerabilities.length > 2 && (
-                                    <div className="text-red-500">+{portInfo.vulnerabilities.length - 2} more</div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                    </div>
+
+            {data && (
+              <div className="text-green-400 bg-green-950/10 rounded border border-green-900/30 p-3 space-y-3">
+
+                {/* Stats Bar */}
+                <div className="grid grid-cols-3 gap-4 text-sm pb-3 border-b border-green-900/20">
+                  <div className="bg-green-950/20 p-2 rounded">
+                    <div className="text-green-300 font-bold text-lg">{data.scan_summary?.total_ports_scanned || 0}</div>
+                    <div className="text-xs text-green-500">Total Ports</div>
                   </div>
-                )}
+                  <div className="bg-green-950/20 p-2 rounded">
+                    <div className="text-green-400 font-bold text-lg">{data.scan_summary?.open_ports || 0}</div>
+                    <div className="text-xs text-green-500">Open Ports</div>
+                  </div>
+                  <div className="bg-green-950/20 p-2 rounded">
+                    <div className="text-yellow-400 font-bold text-lg">{data.scan_summary?.closed_ports || 0}</div>
+                    <div className="text-xs text-yellow-500">Closed + Filtered</div>
+                  </div>
+                  <div className="bg-blue-950/20 p-2 rounded">
+                    <div className="text-blue-400 font-bold text-lg">{data.target}</div>
+                    <div className="text-xs text-blue-500">Target IP</div>
+                  </div>
+                  <div className="bg-green-950/20 p-2 rounded col-span-2">
+                    <div className={`font-bold text-lg ${connectionStatus === 'connected' ? 'text-green-300' : connectionStatus === 'connecting' ? 'text-yellow-300' : 'text-red-300'}`}>{connectionStatus}</div>
+                    <div className="text-xs text-green-500">Connection Status</div>
+                  </div>
+                </div>
 
-                {/* RIGHT COLUMN - Closed and Filtered Ports */}
-                <div className="space-y-3">
+                {/* Two Column Layout */}
+                <div className="grid grid-cols-2 gap-4">
 
-                  {/* Closed Ports */}
-                  {data.closed_ports && Object.keys(data.closed_ports).length > 0 && (
-                    <div className="border-l-2 border-yellow-600 pl-3 py-2">
-                      <strong className="text-yellow-400 text-base block mb-2">CLOSED PORTS ({Object.keys(data.closed_ports).length}):</strong>
-                      <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
-                        {Object.entries(data.closed_ports)
+                  {/* LEFT COLUMN - Open Ports */}
+                  {data.open_ports && Object.keys(data.open_ports).length > 0 && (
+                    <div className="border-l-2 border-green-500 pl-3 py-2">
+                      <strong className="text-green-300 text-base block mb-2">OPEN PORTS ({Object.keys(data.open_ports).length}):</strong>
+                      <div className="space-y-1.5 max-h-96 overflow-y-auto">
+                        {Object.entries(data.open_ports)
                           .sort((a, b) => Number(a[0]) - Number(b[0]))
-                          .slice(0, 60)
-                          .map(([p]) => (
-                            <div key={p} className="text-yellow-600 bg-yellow-950/30 px-2 py-1.5 rounded text-center text-sm font-semibold border border-yellow-900/50 hover:bg-yellow-950/50 transition">
-                              {p}
-                            </div>
-                          ))}
+                          .map(([p, info]) => {
+                            const portInfo = typeof info === 'string' ? { service: info, vulnerabilities: [] } : info;
+                            return (
+                              <div key={p} className="text-sm bg-green-950/40 p-2 rounded">
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-green-300 font-bold text-base">{p}</span>
+                                  <span className="text-green-400 text-xs font-bold">{portInfo.service || 'Unknown'}</span>
+                                </div>
+                                {portInfo.vulnerabilities && portInfo.vulnerabilities.length > 0 && (
+                                  <div className="text-red-400 text-xs ml-2 space-y-0.5">
+                                    {portInfo.vulnerabilities.slice(0, 2).map((vuln, idx) => (
+                                      <div key={idx}>- {vuln}</div>
+                                    ))}
+                                    {portInfo.vulnerabilities.length > 2 && (
+                                      <div className="text-red-500">+{portInfo.vulnerabilities.length - 2} more</div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                       </div>
-                      {Object.keys(data.closed_ports).length > 60 && (
-                        <div className="text-yellow-600 text-sm text-center italic mt-2">
-                          +{Object.keys(data.closed_ports).length - 60} more
-                        </div>
-                      )}
                     </div>
                   )}
 
-                  {/* Filtered Ports */}
-                  {data.filtered_ports && Object.keys(data.filtered_ports).length > 0 && (
-                    <div className="border-l-2 border-orange-600 pl-3 py-2">
-                      <strong className="text-orange-400 text-base block mb-2">FILTERED PORTS ({Object.keys(data.filtered_ports).length}):</strong>
-                      <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
-                        {Object.entries(data.filtered_ports)
-                          .sort((a, b) => Number(a[0]) - Number(b[0]))
-                          .slice(0, 60)
-                          .map(([p]) => (
-                            <div key={p} className="text-orange-600 bg-orange-950/30 px-2 py-1.5 rounded text-center text-sm font-semibold border border-orange-900/50 hover:bg-orange-950/50 transition">
-                              {p}
-                            </div>
-                          ))}
-                      </div>
-                      {Object.keys(data.filtered_ports).length > 60 && (
-                        <div className="text-orange-600 text-sm text-center italic mt-2">
-                          +{Object.keys(data.filtered_ports).length - 60} more
+                  {/* RIGHT COLUMN - Closed and Filtered Ports */}
+                  <div className="space-y-3">
+
+                    {/* Closed Ports */}
+                    {data.closed_ports && Object.keys(data.closed_ports).length > 0 && (
+                      <div className="border-l-2 border-yellow-600 pl-3 py-2">
+                        <strong className="text-yellow-400 text-base block mb-2">CLOSED PORTS ({Object.keys(data.closed_ports).length}):</strong>
+                        <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
+                          {Object.entries(data.closed_ports)
+                            .sort((a, b) => Number(a[0]) - Number(b[0]))
+                            .slice(0, 60)
+                            .map(([p]) => (
+                              <div key={p} className="text-yellow-600 bg-yellow-950/30 px-2 py-1.5 rounded text-center text-sm font-semibold border border-yellow-900/50 hover:bg-yellow-950/50 transition">
+                                {p}
+                              </div>
+                            ))}
                         </div>
-                      )}
-                    </div>
-                  )}
+                        {Object.keys(data.closed_ports).length > 60 && (
+                          <div className="text-yellow-600 text-sm text-center italic mt-2">
+                            +{Object.keys(data.closed_ports).length - 60} more
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Filtered Ports */}
+                    {data.filtered_ports && Object.keys(data.filtered_ports).length > 0 && (
+                      <div className="border-l-2 border-orange-600 pl-3 py-2">
+                        <strong className="text-orange-400 text-base block mb-2">FILTERED PORTS ({Object.keys(data.filtered_ports).length}):</strong>
+                        <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
+                          {Object.entries(data.filtered_ports)
+                            .sort((a, b) => Number(a[0]) - Number(b[0]))
+                            .slice(0, 60)
+                            .map(([p]) => (
+                              <div key={p} className="text-orange-600 bg-orange-950/30 px-2 py-1.5 rounded text-center text-sm font-semibold border border-orange-900/50 hover:bg-orange-950/50 transition">
+                                {p}
+                              </div>
+                            ))}
+                        </div>
+                        {Object.keys(data.filtered_ports).length > 60 && (
+                          <div className="text-orange-600 text-sm text-center italic mt-2">
+                            +{Object.keys(data.filtered_ports).length - 60} more
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                  </div>
 
                 </div>
 
+                {/* Empty State */}
+                {Object.keys(data.open_ports || {}).length === 0 &&
+                  Object.keys(data.closed_ports || {}).length === 0 &&
+                  Object.keys(data.filtered_ports || {}).length === 0 && (
+                    <div className="text-yellow-600 italic text-base text-center py-4">Awaiting scan results...</div>
+                  )}
               </div>
+            )}
 
-              {/* Empty State */}
-              {Object.keys(data.open_ports || {}).length === 0 &&
-                Object.keys(data.closed_ports || {}).length === 0 &&
-                Object.keys(data.filtered_ports || {}).length === 0 && (
-                <div className="text-yellow-600 italic text-base text-center py-4">Awaiting scan results...</div>
-              )}
-            </div>
-          )}
-
-          {!data && !loading && !error && (
-            <span className="opacity-40 animate-pulse italic text-base">
-              {">>>"} READY FOR SCAN
-            </span>
-          )}
-            </>
-          )}
+            {!data && !loading && !error && (
+              <span className="opacity-40 animate-pulse italic text-base">
+                {">>>"} READY FOR SCAN
+              </span>
+            )}
+          </>
         </div>
       </div>
     </div>
