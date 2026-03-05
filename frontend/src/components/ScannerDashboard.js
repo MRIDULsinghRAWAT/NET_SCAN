@@ -293,7 +293,7 @@ const ScannerDashboard = () => {
 
       {/* ====== INLINE GRAPH VIEW ====== */}
       {graphData && (
-        <div className="mt-8 w-full max-w-7xl h-[350px] border border-red-900/40 bg-black/80 backdrop-blur-xl rounded-lg overflow-hidden shadow-2xl relative">
+        <div className="mt-8 w-full max-w-7xl h-[500px] border border-red-900/40 bg-black/80 backdrop-blur-xl rounded-lg overflow-hidden shadow-2xl relative">
           <GraphView graphData={graphData} exposure={exposure} attackChains={attackChains} />
         </div>
       )}

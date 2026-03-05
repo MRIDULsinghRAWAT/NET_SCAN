@@ -3,45 +3,45 @@ import React, { useEffect, useRef, useState } from 'react';
 const GraphView = ({ graphData, exposure, attackChains }) => {
   const canvasRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
-  const [selectedEdge, setSelectedEdge] = useState(null);
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const hoveredNodeRef = useRef(null);
+  const nodesRef = useRef([]);
+  const edgesRef = useRef([]);
+  const animationRef = useRef(null);
+  const initializedRef = useRef(false);
 
-  // Simple force-directed graph simulation
+  // Keep hoveredNode ref in sync with state
   useEffect(() => {
-    if (!graphData || !canvasRef.current) {
-      console.log('>>> GraphView: Missing data or canvas ref', { graphData, canvasRef: canvasRef.current });
-      return;
-    }
+    hoveredNodeRef.current = hoveredNode;
+  }, [hoveredNode]);
 
-    console.log('>>> GraphView: Initializing with data:', graphData);
-    console.log('>>> Nodes count:', graphData.nodes?.length);
-    console.log('>>> Edges count:', graphData.edges?.length);
+  // Force-directed graph simulation — runs ONCE when graphData changes
+  useEffect(() => {
+    if (!graphData || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationId;
 
     // Fix Canvas Aspect Ratio dynamically to prevent squashing
     const parent = canvas.parentElement;
-    if (parent) {
+    if (parent && parent.clientWidth > 0 && parent.clientHeight > 0) {
       canvas.width = parent.clientWidth;
       canvas.height = parent.clientHeight;
+    } else {
+      // Fallback dimensions if parent hasn't rendered yet
+      canvas.width = 1200;
+      canvas.height = 400;
     }
 
-    // Canvas setup
     const width = canvas.width;
     const height = canvas.height;
 
-    // Initialize node positions if not already done
     const nodes = graphData.nodes || [];
     const edges = graphData.edges || [];
+    nodesRef.current = nodes;
+    edgesRef.current = edges;
 
-    console.log('>>> Graph rendering: width=', width, 'height=', height, 'nodes=', nodes.length);
-
-    // Better initial positioning - arrange in circle
-    if (!nodes.some(n => n.x !== undefined)) {
+    // Initialize node positions — arrange in circle (only on first load)
+    if (!initializedRef.current || !nodes.some(n => n.x !== undefined)) {
       const centerX = width / 2;
       const centerY = height / 2;
       const radius = Math.min(width, height) * 0.38;
@@ -53,77 +53,73 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         node.vx = 0;
         node.vy = 0;
       });
+      initializedRef.current = true;
     }
 
-    const simulation = () => {
-      // Apply forces
-      nodes.forEach((node, i) => {
-        // Strong repulsion between nodes — push them apart
-        nodes.forEach((other, j) => {
-          if (i !== j) {
-            const dx = node.x - other.x;
-            const dy = node.y - other.y;
-            const dist = Math.hypot(dx, dy) || 1;
-            const force = 1000 / (dist * dist + 50);
-            node.vx += (dx / dist) * force;
-            node.vy += (dy / dist) * force;
-          }
-        });
+    let settled = false;
 
-        // Attraction to edges — spring force with longer rest length
-        edges.forEach((edge) => {
-          if (edge.from === node.id) {
-            const toNode = nodes.find(n => n.id === edge.to);
-            if (toNode) {
-              const dx = toNode.x - node.x;
-              const dy = toNode.y - node.y;
+    const render = () => {
+      if (!settled) {
+        // Apply forces only while simulation is still settling
+        nodes.forEach((node, i) => {
+          nodes.forEach((other, j) => {
+            if (i !== j) {
+              const dx = node.x - other.x;
+              const dy = node.y - other.y;
               const dist = Math.hypot(dx, dy) || 1;
-              const force = (dist - 200) * 0.05;
+              const force = 1000 / (dist * dist + 50);
               node.vx += (dx / dist) * force;
               node.vy += (dy / dist) * force;
             }
-          }
-          if (edge.to === node.id) {
-            const fromNode = nodes.find(n => n.id === edge.from);
-            if (fromNode) {
-              const dx = fromNode.x - node.x;
-              const dy = fromNode.y - node.y;
-              const dist = Math.hypot(dx, dy) || 1;
-              const force = (dist - 200) * 0.05;
-              node.vx += (dx / dist) * force;
-              node.vy += (dy / dist) * force;
+          });
+
+          edges.forEach((edge) => {
+            if (edge.from === node.id) {
+              const toNode = nodes.find(n => n.id === edge.to);
+              if (toNode) {
+                const dx = toNode.x - node.x;
+                const dy = toNode.y - node.y;
+                const dist = Math.hypot(dx, dy) || 1;
+                const force = (dist - 200) * 0.05;
+                node.vx += (dx / dist) * force;
+                node.vy += (dy / dist) * force;
+              }
             }
-          }
+            if (edge.to === node.id) {
+              const fromNode = nodes.find(n => n.id === edge.from);
+              if (fromNode) {
+                const dx = fromNode.x - node.x;
+                const dy = fromNode.y - node.y;
+                const dist = Math.hypot(dx, dy) || 1;
+                const force = (dist - 200) * 0.05;
+                node.vx += (dx / dist) * force;
+                node.vy += (dy / dist) * force;
+              }
+            }
+          });
+
+          node.vx += (width / 2 - node.x) * 0.005;
+          node.vy += (height / 2 - node.y) * 0.005;
+          node.vx *= 0.85;
+          node.vy *= 0.85;
+          node.x += node.vx;
+          node.y += node.vy;
+
+          const padding = 60;
+          if (node.x < padding) node.x = padding;
+          if (node.x > width - padding) node.x = width - padding;
+          if (node.y < padding) node.y = padding;
+          if (node.y > height - padding) node.y = height - padding;
         });
 
-        // Very gentle center attraction — just enough to keep graph on screen
-        node.vx += (width / 2 - node.x) * 0.005;
-        node.vy += (height / 2 - node.y) * 0.005;
+        // Check if simulation has settled
+        const stillMoving = nodes.some(n => Math.abs(n.vx) > 0.5 || Math.abs(n.vy) > 0.5);
+        if (!stillMoving) settled = true;
+      }
 
-        // Damping
-        node.vx *= 0.85;
-        node.vy *= 0.85;
-
-        // Update position
-        node.x += node.vx;
-        node.y += node.vy;
-
-        // Boundary conditions with padding
-        const padding = 60;
-        if (node.x < padding) node.x = padding;
-        if (node.x > width - padding) node.x = width - padding;
-        if (node.y < padding) node.y = padding;
-        if (node.y > height - padding) node.y = height - padding;
-      });
-
-      // Clear canvas
+      // Always draw current frame
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
-
-      // Apply zoom and pan
-      ctx.save();
-      ctx.translate(pan.x, pan.y);
-      ctx.scale(zoom, zoom);
 
       // Draw edges
       edges.forEach((edge) => {
@@ -131,14 +127,13 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         const toNode = nodes.find(n => n.id === edge.to);
 
         if (fromNode && toNode) {
-          ctx.strokeStyle = selectedEdge?.id === edge.id ? '#00FF00' : '#555555';
-          ctx.lineWidth = selectedEdge?.id === edge.id ? 3 : 2;
+          ctx.strokeStyle = '#555555';
+          ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(fromNode.x, fromNode.y);
           ctx.lineTo(toNode.x, toNode.y);
           ctx.stroke();
 
-          // Arrow
           const angle = Math.atan2(toNode.y - fromNode.y, toNode.x - fromNode.x);
           const arrowSize = 15;
           ctx.fillStyle = edge.type === 'lateral_movement' ? '#FF6B6B' : '#FFA500';
@@ -150,12 +145,12 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         }
       });
 
-      // Draw nodes
+      // Draw nodes — read hovered from ref (no re-render!)
+      const currentHovered = hoveredNodeRef.current;
       nodes.forEach((node) => {
-        const isHovered = hoveredNode?.id === node.id;
+        const isHovered = currentHovered?.id === node.id;
         const size = isHovered ? node.size * 1.5 : node.size;
 
-        // Kill Chain role-based outer ring
         const roleColors = {
           entry: { ring: '#06b6d4', label: 'ENTRY', glow: 'rgba(6, 182, 212, 0.3)' },
           pivot: { ring: '#eab308', label: 'PIVOT', glow: 'rgba(234, 179, 8, 0.3)' },
@@ -163,13 +158,11 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         };
         const roleInfo = roleColors[node.role];
 
-        // Outer glow ring for classified nodes
         if (roleInfo) {
           ctx.fillStyle = roleInfo.glow;
           ctx.beginPath();
           ctx.arc(node.x, node.y, size + 6, 0, Math.PI * 2);
           ctx.fill();
-
           ctx.strokeStyle = roleInfo.ring;
           ctx.lineWidth = 2;
           ctx.beginPath();
@@ -177,31 +170,26 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
           ctx.stroke();
         }
 
-        // Node circle
         ctx.fillStyle = node.color;
         ctx.beginPath();
         ctx.arc(node.x, node.y, size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Glow effect for critical nodes
         if (node.risk === 'Critical') {
           ctx.strokeStyle = 'rgba(220, 38, 38, 0.8)';
           ctx.lineWidth = 3;
           ctx.stroke();
         }
 
-        // Border for all nodes
         ctx.strokeStyle = '#888888';
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Service label (always show)
         ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 11px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(node.label.split('\n')[0], node.x, node.y - size - 12);
 
-        // Role tag below node
         if (roleInfo) {
           ctx.fillStyle = roleInfo.ring;
           ctx.font = 'bold 9px Arial';
@@ -209,22 +197,18 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
         }
       });
 
-      ctx.restore();
-
-      // Continue animation if still moving
-      const stillMoving = nodes.some(n => Math.abs(n.vx) > 0.5 || Math.abs(n.vy) > 0.5);
-      if (stillMoving) {
-        animationId = requestAnimationFrame(simulation);
-      }
+      // Keep looping for hover highlight updates even after settling
+      animationRef.current = requestAnimationFrame(render);
     };
 
-    simulation();
+    // Start render loop
+    animationRef.current = requestAnimationFrame(render);
 
-    // Mouse events
+    // Mouse events — only updates the ref, does NOT trigger re-render of simulation
     const handleMouseMove = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left - pan.x) / zoom;
-      const y = (e.clientY - rect.top - pan.y) / zoom;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
       let found = null;
       for (let node of nodes) {
@@ -234,6 +218,7 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
           break;
         }
       }
+      hoveredNodeRef.current = found;
       setHoveredNode(found);
     };
 
@@ -241,14 +226,15 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
 
     return () => {
       canvas.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(animationRef.current);
     };
-  }, [graphData, hoveredNode, selectedEdge, pan, zoom]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData]);
 
   const stats = graphData?.statistics || {};
 
   return (
-    <div className="w-full h-full flex flex-col bg-black border border-red-900/40">
+    <div className="w-full h-full bg-black border border-red-900/40 overflow-auto">
       {/* Header */}
       <div className="border-b border-red-900/30 p-4 bg-black/50">
         <div className="flex justify-between items-center mb-3">
@@ -303,11 +289,11 @@ const GraphView = ({ graphData, exposure, attackChains }) => {
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 relative overflow-hidden bg-black/80">
+      <div className="relative bg-black/80 h-[300px]">
         <canvas
           ref={canvasRef}
           width={1200}
-          height={600}
+          height={300}
           className="w-full h-full cursor-crosshair"
         />
 
