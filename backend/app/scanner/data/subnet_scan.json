@@ -1,21 +1,144 @@
 {
-    "subnet": "192.168.1.0/24",
-    "scan_time": "2026-03-19 14:54:26",
+    "subnet": "8.8.8.0/24",
+    "scan_time": "2026-03-20 00:41:42",
     "total_scanned": 254,
-    "hosts_found": 0,
-    "hosts": {},
+    "hosts_found": 2,
+    "hosts": {
+        "8.8.8.8": {
+            "ip": "8.8.8.8",
+            "hostname": "dns.google",
+            "alive": true,
+            "host_type": "webserver",
+            "open_ports": [
+                {
+                    "port": 53,
+                    "service": "DNS",
+                    "role": "target",
+                    "status": "open"
+                },
+                {
+                    "port": 443,
+                    "service": "HTTPS",
+                    "role": "entry",
+                    "status": "open"
+                }
+            ],
+            "port_count": 2,
+            "risk_score": 10,
+            "risk_level": "Low"
+        },
+        "8.8.8.53": {
+            "ip": "8.8.8.53",
+            "hostname": "dns.google",
+            "alive": true,
+            "host_type": "webserver",
+            "open_ports": [
+                {
+                    "port": 80,
+                    "service": "HTTP",
+                    "role": "entry",
+                    "status": "open"
+                },
+                {
+                    "port": 443,
+                    "service": "HTTPS",
+                    "role": "entry",
+                    "status": "open"
+                }
+            ],
+            "port_count": 2,
+            "risk_score": 15,
+            "risk_level": "Low"
+        }
+    },
     "topology": {
-        "nodes": [],
-        "edges": [],
+        "nodes": [
+            {
+                "id": "8.8.8.8",
+                "ip": "8.8.8.8",
+                "hostname": "dns.google",
+                "host_type": "webserver",
+                "icon": "WEB",
+                "color": "#3b82f6",
+                "risk_color": "#22c55e",
+                "risk_score": 10,
+                "risk_level": "Low",
+                "open_ports": [
+                    {
+                        "port": 53,
+                        "service": "DNS",
+                        "role": "target",
+                        "status": "open"
+                    },
+                    {
+                        "port": 443,
+                        "service": "HTTPS",
+                        "role": "entry",
+                        "status": "open"
+                    }
+                ],
+                "port_count": 2,
+                "size": 26,
+                "label": "dns.google"
+            },
+            {
+                "id": "8.8.8.53",
+                "ip": "8.8.8.53",
+                "hostname": "dns.google",
+                "host_type": "webserver",
+                "icon": "WEB",
+                "color": "#3b82f6",
+                "risk_color": "#22c55e",
+                "risk_score": 15,
+                "risk_level": "Low",
+                "open_ports": [
+                    {
+                        "port": 80,
+                        "service": "HTTP",
+                        "role": "entry",
+                        "status": "open"
+                    },
+                    {
+                        "port": 443,
+                        "service": "HTTPS",
+                        "role": "entry",
+                        "status": "open"
+                    }
+                ],
+                "port_count": 2,
+                "size": 26,
+                "label": "dns.google"
+            }
+        ],
+        "edges": [
+            {
+                "id": "edge_0",
+                "from": "8.8.8.8",
+                "to": "8.8.8.53",
+                "type": "web",
+                "label": "Web Network",
+                "risk": 3
+            },
+            {
+                "id": "edge_1",
+                "from": "8.8.8.8",
+                "to": "8.8.8.53",
+                "type": "dns",
+                "label": "DNS Dependency",
+                "risk": 2
+            }
+        ],
         "statistics": {
-            "total_hosts": 0,
-            "total_connections": 0,
-            "host_types": {},
+            "total_hosts": 2,
+            "total_connections": 2,
+            "host_types": {
+                "webserver": 2
+            },
             "risk_distribution": {
                 "Critical": 0,
                 "High": 0,
                 "Medium": 0,
-                "Low": 0
+                "Low": 2
             }
         }
     }

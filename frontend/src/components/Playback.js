@@ -57,10 +57,14 @@ const Playback = ({ simulation, graphData }) => {
   const progress = currentStep >= 0 ? ((currentStep + 1) / totalSteps) * 100 : 0;
 
   // Determine action colors/icons
+  const TargetIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+  const ShuffleIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>;
+  const ObjectiveIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>;
+
   const actionStyle = {
-    INITIAL_ACCESS: { color: '#06b6d4', bg: 'rgba(6,182,212,0.15)', icon: '🎯', label: 'INITIAL ACCESS' },
-    LATERAL_MOVE:   { color: '#eab308', bg: 'rgba(234,179,8,0.15)', icon: '🔀', label: 'LATERAL MOVE' },
-    OBJECTIVE:      { color: '#a855f7', bg: 'rgba(168,85,247,0.15)', icon: '💀', label: 'OBJECTIVE' },
+    INITIAL_ACCESS: { color: '#06b6d4', bg: 'rgba(6,182,212,0.15)', icon: <TargetIcon/>, label: 'INITIAL ACCESS' },
+    LATERAL_MOVE:   { color: '#eab308', bg: 'rgba(234,179,8,0.15)', icon: <ShuffleIcon/>, label: 'LATERAL MOVE' },
+    OBJECTIVE:      { color: '#a855f7', bg: 'rgba(168,85,247,0.15)', icon: <ObjectiveIcon/>, label: 'OBJECTIVE' },
   };
 
   return (
@@ -123,7 +127,7 @@ const Playback = ({ simulation, graphData }) => {
                     boxShadow: isCurrent ? `0 0 20px ${style.color}40` : 'none',
                   }}
                 >
-                  {isCurrent ? style.icon : isPast ? '✓' : idx + 1}
+                  {isCurrent ? style.icon : isPast ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : idx + 1}
                 </div>
 
                 {/* Service label */}
@@ -157,7 +161,7 @@ const Playback = ({ simulation, graphData }) => {
           className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
           title="Step Back"
         >
-          ⏮
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
         </button>
 
         {/* Play / Pause */}
@@ -170,7 +174,11 @@ const Playback = ({ simulation, graphData }) => {
           }`}
           title={playing ? 'Pause' : 'Play'}
         >
-          {playing ? '⏸' : '▶'}
+          {playing ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{marginLeft: '4px'}}><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          )}
         </button>
 
         {/* Step Forward */}
@@ -180,16 +188,30 @@ const Playback = ({ simulation, graphData }) => {
           className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
           title="Step Forward"
         >
-          ⏭
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
         </button>
 
-        {/* Reset */}
+        {/* Reset / Play Button */}
         <button
-          onClick={handleReset}
-          className="px-4 py-2 rounded-full bg-red-900/60 hover:bg-red-800 text-red-300 text-xs font-bold tracking-wider transition-colors border border-red-800/40"
-          title="Reset"
+          onClick={currentStep >= 0 || playing ? handleReset : handlePlay}
+          className={`px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-colors border flex items-center gap-1.5 ${
+            currentStep >= 0 || playing
+              ? 'bg-red-900/60 hover:bg-red-800 text-red-300 border-red-800/40'
+              : 'bg-green-900/60 hover:bg-green-800 text-green-300 border-green-800/40'
+          }`}
+          title={currentStep >= 0 || playing ? 'Reset' : 'Play'}
         >
-          ↺ RESET
+          {currentStep >= 0 || playing ? (
+            <>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              RESET
+            </>
+          ) : (
+            <>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              PLAY
+            </>
+          )}
         </button>
 
         {/* Progress text */}
@@ -216,14 +238,14 @@ const Playback = ({ simulation, graphData }) => {
           <div className="flex items-start gap-4">
             {/* Action Badge */}
             <div
-              className="shrink-0 px-3 py-2 rounded-lg text-sm font-bold tracking-wider"
+              className="shrink-0 px-3 py-2 rounded-lg text-sm font-bold tracking-wider flex items-center gap-2"
               style={{
                 background: (actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).bg,
                 color: (actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).color,
                 border: `1px solid ${(actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).color}40`,
               }}
             >
-              {(actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).icon}{' '}
+              {(actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).icon}
               {(actionStyle[activeStep.action] || actionStyle.LATERAL_MOVE).label}
             </div>
 
@@ -272,9 +294,11 @@ const Playback = ({ simulation, graphData }) => {
           )}
         </div>
       ) : (
-        <div className="px-4 py-6 text-center text-gray-500 text-sm bg-black/30">
-          <div className="text-xl mb-2">▶</div>
-          Press <span className="text-green-400 font-bold">Play</span> to simulate the deadliest attack path through your network
+        <div className="px-4 py-6 text-center text-gray-500 text-sm bg-black/30 flex flex-col items-center">
+          <div className="text-xl mb-3 text-green-500">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div>Press <span className="text-green-400 font-bold">Play</span> to simulate the deadliest attack path through your network</div>
         </div>
       )}
     </div>
