@@ -9,6 +9,7 @@ from mapping import analyzer
 from mapping import graph_gen
 from mapping import cve_lookup
 from scanner import subnet_scanner
+from reporting.pdf_generator import generate_pdf_report
 import threading
 import time
 
@@ -288,6 +289,35 @@ def what_if():
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  REPORTING ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════
+
+@app.route('/api/download-report', methods=['GET'])
+def download_report():
+    """Generates and downloads a professional PDF report."""
+    from flask import send_file
+    try:
+        data_dir = os.path.join(BASE_DIR, 'scanner', 'data')
+        scan_file = os.path.join(data_dir, 'scan_output.json')
+        
+        if not os.path.exists(scan_file):
+            return jsonify({"error": "No scan data found to generate report."}), 404
+            
+        pdf_path = generate_pdf_report(scan_file)
+        
+        return send_file(
+            pdf_path, 
+            as_attachment=True, 
+            download_name=os.path.basename(pdf_path),
+            mimetype='application/pdf'
+        )
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Failed to generate report: {str(e)}"}), 500
 
 
 # ══════════════════════════════════════════════════════════════════════

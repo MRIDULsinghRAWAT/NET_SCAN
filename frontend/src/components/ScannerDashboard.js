@@ -252,6 +252,16 @@ const ScannerDashboard = () => {
     };
   }, [stopPolling]);
 
+  // -------- Download Report --------
+  const downloadReport = async () => {
+    try {
+      window.open(`${API}/api/download-report`, '_blank');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to download report.');
+    }
+  };
+
   return (
     <div className="pt-40 min-h-screen bg-black text-white flex flex-col items-center selection:bg-red-600 pb-20">
 
@@ -282,16 +292,27 @@ const ScannerDashboard = () => {
       </div>
 
       {/* Trigger Button */}
-      <button
-        onClick={startScan}
-        disabled={loading}
-        className={`px-10 py-4 font-bold rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg ${loading
-          ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-          : "bg-red-600 hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)]"
-          }`}
-      >
-        {loading ? ">>> SCANNING NETWORK..." : "LAUNCH SYSTEM SCAN"}
-      </button>
+      <div className="flex gap-4">
+        <button
+          onClick={startScan}
+          disabled={loading}
+          className={`px-10 py-4 font-bold rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg ${loading
+            ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+            : "bg-red-600 hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)]"
+            }`}
+        >
+          {loading ? ">>> SCANNING NETWORK..." : "LAUNCH SYSTEM SCAN"}
+        </button>
+
+        {!loading && data && data.open_ports && Object.keys(data.open_ports).length > 0 && (
+          <button
+            onClick={downloadReport}
+            className="px-8 py-4 font-bold rounded-lg transition-all duration-300 transform active:scale-95 shadow-lg bg-zinc-800 border border-zinc-700 text-white hover:bg-zinc-700 hover:text-cyan-400"
+          >
+            DOWNLOAD PDF REPORT
+          </button>
+        )}
+      </div>
 
       {/* ====== INLINE GRAPH VIEW ====== */}
       {graphData && (
