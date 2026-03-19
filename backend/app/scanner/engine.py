@@ -8,7 +8,7 @@ from queue import Queue, Empty
 # Configuration defaults
 TARGET_IP = "192.168.1.1"
 PORT_RANGE = range(1, 1025)
-THREADS = 100
+THREADS = 10
 
 # Vulnerability database: maps ports to common vulnerabilities
 VULNERABILITY_DB = {
