@@ -1,0 +1,22 @@
+{
+    "subnet": "192.168.1.0/24",
+    "scan_time": "2026-03-19 14:54:26",
+    "total_scanned": 254,
+    "hosts_found": 0,
+    "hosts": {},
+    "topology": {
+        "nodes": [],
+        "edges": [],
+        "statistics": {
+            "total_hosts": 0,
+            "total_connections": 0,
+            "host_types": {},
+            "risk_distribution": {
+                "Critical": 0,
+                "High": 0,
+                "Medium": 0,
+                "Low": 0
+            }
+        }
+    }
+}

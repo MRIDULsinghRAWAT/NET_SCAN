@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getScanResults } from '../services/api';
 import GraphView from './Graphview';
+import Playback from './Playback';
 
 const API = 'http://127.0.0.1:5000';
 
@@ -12,7 +13,7 @@ const ScannerDashboard = () => {
   const [target, setTarget] = useState('127.0.0.1');
   const [startPort, setStartPort] = useState(1);
   const [endPort, setEndPort] = useState(1024);
-  const [threads, setThreads] = useState(100);
+  const [threads, setThreads] = useState(1);
   const [connectionStatus, setConnectionStatus] = useState('idle');
   const [openPorts, setOpenPorts] = useState({});
   const [allPorts, setAllPorts] = useState({});
@@ -296,6 +297,13 @@ const ScannerDashboard = () => {
       {graphData && (
         <div className="mt-8 w-full max-w-7xl border border-red-900/40 bg-black/80 backdrop-blur-xl rounded-lg overflow-auto shadow-2xl relative">
           <GraphView graphData={graphData} exposure={exposure} attackChains={attackChains} cveData={cveData} />
+        </div>
+      )}
+
+      {/* ====== ATTACK PATH PLAYBACK ====== */}
+      {graphData?.simulation?.steps?.length > 0 && (
+        <div className="mt-6 w-full max-w-7xl shadow-2xl">
+          <Playback simulation={graphData.simulation} graphData={graphData} />
         </div>
       )}
 

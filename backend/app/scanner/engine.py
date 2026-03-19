@@ -288,7 +288,7 @@ def save_results(ctx):
         "discovered_services": open_ports,  # For backward compatibility
     }
 
-    # Write both a generic file and a per-target file so frontend
+    # Write both a generic file and a per-target file so frontend // 
     # can request results for a specific target and avoid showing
     # stale data from previous scans on different targets.
     file_path = os.path.join(data_dir, "scan_output.json")

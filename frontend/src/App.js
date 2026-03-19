@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Hero from './components/Hero';
 // 1. Ensure karo ki file path ekdum sahi hai
 import ScannerDashboard from './components/ScannerDashboard'; 
+import SubnetScanner from './components/SubnetScanner';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <div className="hidden md:flex space-x-12 text-[14px] font-bold tracking-[0.25em] text-gray-400">
             <Link to="/" className="cursor-pointer hover:text-white transition-colors duration-300">HOME</Link>
             <Link to="/scanner" className="cursor-pointer hover:text-white transition-colors duration-300">SCANNER</Link>
+            <Link to="/subnet" className="cursor-pointer hover:text-white transition-colors duration-300">SUBNET</Link>
             <span className="cursor-pointer hover:text-white transition-colors duration-300">ABOUT</span>
             <span className="cursor-pointer hover:text-white transition-colors duration-300">LEGAL</span>
             <span className="cursor-pointer hover:text-white transition-colors duration-300">CONTACT</span>
@@ -34,6 +36,7 @@ function App() {
             <Route path="/" element={<Hero />} />
             {/* Yahan element={ScannerDashboard} invalid hota hai, element={<ScannerDashboard />} sahi hai */}
             <Route path="/scanner" element={<ScannerDashboard />} />
+            <Route path="/subnet" element={<SubnetScanner />} />
           </Routes>
         </main>
 

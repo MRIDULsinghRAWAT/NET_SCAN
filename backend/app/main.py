@@ -8,6 +8,7 @@ from scanner import streamer
 from mapping import analyzer
 from mapping import graph_gen
 from mapping import cve_lookup
+from scanner import subnet_scanner
 import threading
 import time
 
@@ -287,6 +288,120 @@ def what_if():
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  SUBNET SCAN ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════
+
+subnet_thread = None
+subnet_lock = threading.Lock()
+subnet_state = {
+    "running": False,
+    "subnet": None,
+    "started_at": None
+}
+
+
+@app.route('/api/subnet-scan', methods=['GET', 'POST'])
+def subnet_scan():
+    global subnet_thread, subnet_state
+
+    if request.method == 'GET':
+        # Return saved subnet scan results
+        scanner_dir = os.path.join(BASE_DIR, 'scanner', 'data')
+        file_path = os.path.join(scanner_dir, 'subnet_scan.json')
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return jsonify(json.load(f))
+        return jsonify({"error": "No subnet scan results found"}), 404
+
+    # POST: start a new subnet scan
+    try:
+        payload = request.get_json(force=True)
+        subnet_str = payload.get('subnet', '').strip()
+        threads_count = int(payload.get('threads', 10))
+
+        if not subnet_str:
+            return jsonify({"error": "Missing 'subnet' parameter"}), 400
+
+        print(f">>> Received subnet scan request: {subnet_str}")
+
+        # Cancel any running subnet scan
+        with subnet_lock:
+            if subnet_state["running"]:
+                print(">>> Previous subnet scan still running, please wait.")
+                return jsonify({"error": "A subnet scan is already running"}), 409
+
+        # Create SSE stream
+        stream_key = f"subnet_{subnet_str}"
+        try:
+            streamer.create_stream(stream_key)
+        except Exception:
+            pass
+
+        def _background_subnet_scan(sub, th, sk):
+            try:
+                with subnet_lock:
+                    subnet_state["running"] = True
+                    subnet_state["subnet"] = sub
+                    subnet_state["started_at"] = time.time()
+
+                subnet_scanner.run_subnet_scan(sub, thread_count=th, stream_key=sk)
+
+            except Exception as ex:
+                print(f">>> SUBNET SCAN ERROR: {ex}")
+                import traceback
+                traceback.print_exc()
+            finally:
+                with subnet_lock:
+                    subnet_state["running"] = False
+                    subnet_state["subnet"] = None
+
+        with subnet_lock:
+            subnet_thread = threading.Thread(
+                target=_background_subnet_scan,
+                args=(subnet_str, threads_count, stream_key),
+                daemon=True
+            )
+            subnet_thread.start()
+
+        return jsonify({"status": "started", "subnet": subnet_str, "stream_key": stream_key}), 202
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/subnet-status', methods=['GET'])
+def subnet_status():
+    with subnet_lock:
+        return jsonify({
+            "running": bool(subnet_state.get("running", False)),
+            "subnet": subnet_state.get("subnet"),
+            "started_at": subnet_state.get("started_at")
+        })
+
+
+@app.route('/api/subnet-stream', methods=['GET'])
+def subnet_stream():
+    """SSE endpoint for subnet scan results."""
+    stream_key = request.args.get('key')
+    if not stream_key:
+        return jsonify({"error": "Missing 'key' query parameter"}), 400
+
+    q = streamer.get_event_queue(stream_key)
+
+    def event_stream():
+        while True:
+            item = q.get()
+            if item is None:
+                break
+            try:
+                yield f"data: {json.dumps(item)}\n\n"
+            except Exception:
+                pass
+
+    return Response(stream_with_context(event_stream()), mimetype='text/event-stream')
 
 
 if __name__ == '__main__':
