@@ -1,8 +1,23 @@
-NET SCAN : Graph Intelligent Attack Path Analyzer 
+# NET_SCAN: Automated Lateral Movement Detection & Cyber Kill Chain Modeling
 
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?logo=react)
+![Flask](https://img.shields.io/badge/Flask-Backend-000000.svg?logo=flask)
 
-Network Service Discovery and Security Assessment Tool with Automated Reporting 
+**NET_SCAN** is a real-time network intelligence platform that systematically advances beyond traditional node-centric port scanning (like Nmap or Nessus) by automatically graphing distributed attack paths. It identifies how adversaries can chain vulnerabilities together across enterprise infrastructures utilizing **Cyber Kill Chain Modeling** and **MITRE ATT&CK Mapping**.
 
+---
+
+## Core Novelty
+Network security evaluations often produce massive text outputs consisting of isolated vulnerabilities. NET_SCAN translates this data into interactive, force-directed graphs. It autonomously assigns services into kill-chain objectives (**Entry**, **Pivot**, and **Target** nodes), calculates viable lateral movement transversal paths, and generates a mathematically justified **Network Exposure Score (NES)** to measure overall topological risk.
+
+## Key Features
+- **Heuristic Kill Chain Classification:** Autonomously classes discovered network services based on typical adversarial exploitation behavior.
+- **Automated Lateral Movement Maps:** Traces attack linkages such as `Entry → Pivot` or `Pivot → Target` utilizing standardized MITRE TTPs (e.g., T1021.004).
+- **Network Exposure Score (NES):** Empirically measures architectural risk using independent weights matching CVSS v3.1 critical and high matrices, combined with lateral network compounding logic. 
+- **Real-Time Canvas Visualization:** Renders interactive, physics-based attack graphs streamed live via Server-Sent Events (SSE) directly to the browser.
+- **NVD CVE Enrichment:** Real-time linkage of discovered banner heuristics against the National Vulnerability Database API to enrich nodes with historically verified CVEs.
+- **"What-If" Analysis Engine:** Pre-calculate mitigation efficiency by temporarily scrubbing specific nodes from the attack scenario dynamically.
 
 ## Project Structure
 
@@ -10,62 +25,69 @@ Network Service Discovery and Security Assessment Tool with Automated Reporting
 NET_SCAN/
 ├── backend/
 │   ├── app/
-│   │   ├── mapping/         # Graph generation and vulnerability logic
-│   │   │   ├── database/    # MongoDB connections
-│   │   │   ├── graph_gen.py # Pathfinding and Graph logic
-│   │   │   └── vuln_api.py  # API for vulnerability mapping
-│   │   └── scanner/         # Core Engine (Mridul's Module)
-│   │       ├── banner.py    # Service version discovery
-│   │       └── engine.py    # Multi-threaded scanner with Queue
-│   ├── data/                # Scanned results (JSON files)
-│   └── main.py              # FastAPI Entry Point
+│   │   ├── main.py          # Core Flask API & SSE Streamer
+│   │   ├── mapping/         # Kill Chain Analytics & Vulnerability Intelligence
+│   │   │   ├── analyzer.py  # Pathfinding, MITRE mappings, Attack chains
+│   │   │   ├── graph_gen.py # Force-directed simulation logic
+│   │   │   └── cve_lookup.py# NVD integration wrapper
+│   │   ├── reporting/       # Professional PDF Export Engine
+│   │   └── scanner/         # Multi-threaded TCP Port Enumerable Engine
+│   │       ├── engine.py    # Multi-threaded worker queues
+│   │       └── banner.py    # Service heuristic inferences
 ├── frontend/
 │   ├── src/
-│   │   ├── components/      # React Components (GraphView, Sidebar)
-│   │   └── services/        # API communication
-│   └── package.json         # Frontend dependencies
-├── requirements.txt         # Backend dependencies
+│   │   ├── components/      # React UI 
+│   │   │   ├── Graphview.js        # HTML5 Canvas Graph 
+│   │   │   └── ScannerDashboard.js # Primary Interaction Context
+│   │   └── services/        # Subroutines & API configs
+│   └── package.json         # Node Dependency manifest
 └── README.md                # Project documentation
 ```
 
-## How to Run (CLI)
-This section explains how to execute the scanning engine directly from your terminal.
+## Installation & Setup
 
-### 1. Open Terminal/CMD
-Open your Command Prompt (Windows) or Terminal (Mac/Linux).
+NET_SCAN utilizes a decoupled architecture communicating via REST APIs and Server-Sent Events. You will need to spin up the Python backend and the Node/React frontend simultaneously.
 
-### 2. Navigate to the Project Root
-Use the `cd` command to enter your project directory:
+### 1. Backend (Scanner & Intelligence Pipeline)
+Open a terminal in the project root:
+```bash
+cd backend
+python -m venv venv
 
-cd Desktop/NET_SCAN
+# Activate Environment (Windows)
+venv\Scripts\activate
+# Activate Environment (Mac/Linux)
+# source venv/bin/activate
 
-### 3. Move to the Scanner Directory
-Since the `engine.py` file is located within the scanner sub-folder, navigate there:
-
-cd backend/app/scanner
-
-### 4. Execute the Scanner
-Run the engine using Python. A **Target IP** is mandatory.
-
-**Basic Scan (Default Settings):**
-
-python engine.py -t 127.0.0.1
-
-**Advanced Scan (Custom Range & Threads):**
-
-python engine.py -t 127.0.0.1 -s 1 -e 1000 -th 150
-
-###  CLI Arguments Breakdown
-
-| Parameter | Full Name | Description |
-| :--- | :--- | :--- |
-| `-t` | `--target` | **(Required)** The IP address of the machine you want to audit. |
-| `-s` | `--start` | Starting port number for the scan (Default: 1). |
-| `-e` | `--end` | Ending port boundary for the scan (Default: 1024). |
-| `-th` | `--threads` | Number of simultaneous threads for speed (Default: 100). |
-
-###  Output Location
-After the scan, the engine automatically persists the results in:
-`NET_SCAN/data/scan_output.json`
-
+pip install -r requirements.txt
 ```
+
+### 2. Frontend (Dashboard UI)
+Open a second, separate terminal in the project root:
+```bash
+cd frontend
+npm install
+```
+
+## Usage
+
+To launch the integrated platform:
+
+1. **Start the Flask AP:**
+   ```bash
+   cd backend
+   python run.py  # OR python app/main.py (Depending on your root level)
+   ```
+   *The backend will boot up at `http://127.0.0.1:5000`.*
+
+2. **Start the React Visualizer:**
+   ```bash
+   cd frontend
+   npm start
+   ```
+   *The interactive dashboard will spawn at `http://localhost:3000`.*
+
+3. Enter your **Target IP Address**, define thread scopes, and click **LAUNCH SYSTEM SCAN**. Watch the intelligence pipeline reconstruct the kill chain topology natively in the UI.
+
+---
+*For more extensive academic details regarding algorithmic mathematical bounds, latency benchmarks, or MITRE scoring logic, please refer to the attached primary IEEE research document.*
