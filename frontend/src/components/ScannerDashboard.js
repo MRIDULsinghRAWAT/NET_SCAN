@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getScanResults } from '../services/api';
 import GraphView from './Graphview';
-import Playback from './Playback';
 
 const API = 'http://127.0.0.1:5000';
 
@@ -321,12 +320,7 @@ const ScannerDashboard = () => {
         </div>
       )}
 
-      {/* ====== ATTACK PATH PLAYBACK ====== */}
-      {graphData?.simulation?.steps?.length > 0 && (
-        <div className="mt-6 w-full max-w-7xl shadow-2xl">
-          <Playback simulation={graphData.simulation} graphData={graphData} />
-        </div>
-      )}
+
 
       {/* Terminal Display */}
       <div className="mt-8 w-full max-w-7xl border border-red-900/40 bg-black/80 backdrop-blur-xl p-6 rounded-lg font-mono text-sm shadow-2xl relative overflow-hidden max-h-[85vh] flex flex-col">
