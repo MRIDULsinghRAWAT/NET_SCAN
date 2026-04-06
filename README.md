@@ -14,10 +14,12 @@ Network security evaluations often produce massive text outputs consisting of is
 ## Key Features
 - **Heuristic Kill Chain Classification:** Autonomously classes discovered network services based on typical adversarial exploitation behavior.
 - **Automated Lateral Movement Maps:** Traces attack linkages such as `Entry → Pivot` or `Pivot → Target` utilizing standardized MITRE TTPs (e.g., T1021.004).
-- **Network Exposure Score (NES):** Empirically measures architectural risk using independent weights matching CVSS v3.1 critical and high matrices, combined with lateral network compounding logic. 
-- **Real-Time Canvas Visualization:** Renders interactive, physics-based attack graphs streamed live via Server-Sent Events (SSE) directly to the browser.
+- **Network Exposure Score (NES):** Empirically measures architectural risk using independent weights matching CVSS v3.1 critical and high matrices, combined with lateral network compounding logic. Displayed via a dedicated donut gauge with severity classification (LOW / MED / HIGH / CRIT).
+- **Real-Time Canvas Visualization:** Renders interactive, physics-based attack graphs streamed live via Server-Sent Events (SSE) directly to the browser with a glassmorphism-themed UI.
+- **Attack Simulation Controls:** Step-through attack path replay with Start, Pause, Resume, Reset, and Step-Forward controls for detailed kill chain walkthrough.
 - **NVD CVE Enrichment:** Real-time linkage of discovered banner heuristics against the National Vulnerability Database API to enrich nodes with historically verified CVEs.
 - **"What-If" Analysis Engine:** Pre-calculate mitigation efficiency by temporarily scrubbing specific nodes from the attack scenario dynamically.
+- **Scoring Criteria Panel:** Transparent breakdown of exposure score factors including CVE severity, lateral path count, blast radius coverage, and network topology depth.
 
 ## Project Structure
 
