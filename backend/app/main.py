@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, Response, stream_with_context
 from flask_cors import CORS
+from flasgger import Flasgger
 import json
 import os
 
@@ -14,6 +15,7 @@ import time
 
 app = Flask(__name__)
 CORS(app)
+Flasgger(app)
 
 # main.py ke andar
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,8 +36,72 @@ scan_state = {
 @app.route('/api/start-scan', methods=['GET', 'POST'])
 def start_scan():
     """
-    Supports GET (returns last saved scan_output.json) and
-    POST (accepts JSON: { target, start, end, threads }) to run a new scan.
+    Start a network scan or retrieve previous scan results
+    ---
+    get:
+      summary: Get last scan results
+      description: Retrieve previously saved scan results for a target
+      parameters:
+        - name: target
+          in: query
+          type: string
+          required: false
+          description: IP address or CIDR range (e.g., 192.168.1.0/24)
+      responses:
+        200:
+          description: Scan results found
+          schema:
+            type: object
+            properties:
+              target:
+                type: string
+              discovered_services:
+                type: object
+        404:
+          description: No scan results found
+        500:
+          description: Server error
+    post:
+      summary: Start new network scan
+      description: Begin a new network scan with specified parameters
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - target
+            properties:
+              target:
+                type: string
+                description: IP address or CIDR range to scan
+              start:
+                type: integer
+                default: 1
+                description: Starting port number
+              end:
+                type: integer
+                default: 1024
+                description: Ending port number
+              threads:
+                type: integer
+                default: 100
+                description: Number of scanning threads
+      responses:
+        202:
+          description: Scan started successfully
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              target:
+                type: string
+        400:
+          description: Missing required parameters
+        500:
+          description: Server error
     """
     # Ensure we refer to module-level scan state/thread variables
     global scan_thread, scan_state
@@ -237,6 +303,25 @@ def start_scan():
 
 @app.route('/api/scan-status', methods=['GET'])
 def scan_status():
+    """
+    Get current scan status
+    ---
+    get:
+      summary: Check if scan is running
+      description: Returns current scan status and metadata
+      responses:
+        200:
+          description: Status retrieved successfully
+          schema:
+            type: object
+            properties:
+              running:
+                type: boolean
+              target:
+                type: string
+              started_at:
+                type: number
+    """
     with scan_lock:
         return jsonify({
             "running": bool(scan_state.get("running", False)),
@@ -247,8 +332,33 @@ def scan_status():
 
 @app.route('/api/scan-stream', methods=['GET'])
 def scan_stream():
-    """SSE endpoint that streams partial scan results for a target.
-    Client should call: /api/scan-stream?target=1.2.3.4
+    """
+    Real-time scan results stream (Server-Sent Events)
+    ---
+    get:
+      summary: Stream scan results in real-time
+      description: SSE endpoint for real-time scan analysis, graph generation, and CVE data
+      parameters:
+        - name: target
+          in: query
+          type: string
+          required: true
+          description: Target IP address to stream results for
+      responses:
+        200:
+          description: Event stream established
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [analysis, graph, complete]
+              target:
+                type: string
+              timestamp:
+                type: number
+        400:
+          description: Missing target parameter
     """
     target = request.args.get('target')
     if not target:
@@ -273,8 +383,47 @@ def scan_stream():
 @app.route('/api/what-if', methods=['POST'])
 def what_if():
     """
-    Simulates removing a port and returns the impact on the attack surface.
-    Expects JSON: { port: "445", graph_data: { nodes: [...], edges: [...], ... } }
+    What-if analysis: simulate port removal impact
+    ---
+    post:
+      summary: Simulate removing a port and calculate impact
+      description: Analyze how removing a specific port/service affects the attack surface
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - port
+              - graph_data
+            properties:
+              port:
+                type: string
+                description: Port number to simulate removing (e.g., "445")
+              graph_data:
+                type: object
+                description: Current graph data from scan results
+      responses:
+        200:
+          description: What-if analysis completed
+          schema:
+            type: object
+            properties:
+              original_exposure:
+                type: number
+              new_exposure:
+                type: number
+              impact:
+                type: string
+              removed_paths:
+                type: integer
+              affected_nodes:
+                type: integer
+        400:
+          description: Missing parameters
+        500:
+          description: Processing error
     """
     try:
         payload = request.get_json(force=True)
@@ -296,7 +445,22 @@ def what_if():
 
 @app.route('/api/download-report', methods=['GET'])
 def download_report():
-    """Generates and downloads a professional PDF report."""
+    """
+    Download professional PDF report
+    ---
+    get:
+      summary: Generate and download PDF report
+      description: Creates a professional PDF report of the latest scan
+      responses:
+        200:
+          description: PDF report ready for download
+          schema:
+            type: file
+        404:
+          description: No scan data available
+        500:
+          description: Report generation failed
+    """
     from flask import send_file
     try:
         data_dir = os.path.join(BASE_DIR, 'scanner', 'data')

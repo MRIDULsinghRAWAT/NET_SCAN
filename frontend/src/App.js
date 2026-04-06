@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Hero from './components/Hero';
 import ScannerDashboard from './components/ScannerDashboard';
+import About from './components/About';
 
 function App() {
   return (
@@ -37,10 +38,10 @@ function App() {
               SCANNER
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] group-hover:w-full transition-all duration-300" style={{background: 'linear-gradient(90deg, #C1E8FF, #5483B3)'}}></span>
             </Link>
-            <span className="cursor-pointer transition-all duration-300 hover:text-white relative group">
+            <Link to="/about" className="cursor-pointer transition-all duration-300 hover:text-white relative group">
               ABOUT
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] group-hover:w-full transition-all duration-300" style={{background: 'linear-gradient(90deg, #C1E8FF, #5483B3)'}}></span>
-            </span>
+            </Link>
             <span className="cursor-pointer transition-all duration-300 hover:text-white relative group">
               LEGAL
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] group-hover:w-full transition-all duration-300" style={{background: 'linear-gradient(90deg, #C1E8FF, #5483B3)'}}></span>
@@ -61,6 +62,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Hero />} />
             <Route path="/scanner" element={<ScannerDashboard />} />
+            <Route path="/about" element={<About />} />
           </Routes>
         </main>
       </div>

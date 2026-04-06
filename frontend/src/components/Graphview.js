@@ -499,43 +499,43 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
         backdropFilter: 'blur(14px)',
         borderRadius: '18px 18px 0 0',
       }}>
-        <div className="flex gap-5 items-stretch flex-wrap">
+        <div className="flex gap-5 items-start flex-wrap">
           {/* ─── LEFT: Title + Stats ─── */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-1 h-8 rounded-full flex-shrink-0" style={{background: 'linear-gradient(180deg, #C1E8FF, #5483B3)'}}></div>
+              <div className="w-1 h-8 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(180deg, #C1E8FF, #5483B3)' }}></div>
               <div>
-                <h2 className="text-2xl font-black tracking-wide" style={{background: 'linear-gradient(90deg, #C1E8FF, #7DA0CA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>ATTACK PATH GRAPH</h2>
-                <div className="text-xs mt-0.5" style={{color: '#5483B3'}}>Kill Chain Topology & Lateral Movement Analysis</div>
+                <h2 className="text-2xl font-black tracking-wide" style={{ background: 'linear-gradient(90deg, #C1E8FF, #7DA0CA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ATTACK PATH GRAPH</h2>
+                <div className="text-xs mt-0.5" style={{ color: '#5483B3' }}>Kill Chain Topology & Lateral Movement Analysis</div>
               </div>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-5 gap-2 text-xs">
-              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{...glassStatMini, borderColor: 'rgba(239, 107, 138, 0.25)'}}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{background: 'radial-gradient(circle at center, rgba(239,107,138,0.08) 0%, transparent 70%)'}}></div>
-                <div className="font-black text-xl relative" style={{color: '#FF6B8A'}}>{stats.critical_services || 0}</div>
-                <div className="font-semibold" style={{color: '#5483B3'}}>Critical</div>
+              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{ ...glassStatMini, borderColor: 'rgba(239, 107, 138, 0.25)' }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle at center, rgba(239,107,138,0.08) 0%, transparent 70%)' }}></div>
+                <div className="font-black text-xl relative" style={{ color: '#FF6B8A' }}>{stats.critical_services || 0}</div>
+                <div className="font-semibold" style={{ color: '#5483B3' }}>Critical</div>
               </div>
-              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{...glassStatMini, borderColor: 'rgba(249, 115, 22, 0.25)'}}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{background: 'radial-gradient(circle at center, rgba(249,115,22,0.08) 0%, transparent 70%)'}}></div>
+              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{ ...glassStatMini, borderColor: 'rgba(249, 115, 22, 0.25)' }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle at center, rgba(249,115,22,0.08) 0%, transparent 70%)' }}></div>
                 <div className="text-orange-400 font-black text-xl relative">{stats.high_risk_services || 0}</div>
-                <div className="font-semibold" style={{color: '#5483B3'}}>High Risk</div>
+                <div className="font-semibold" style={{ color: '#5483B3' }}>High Risk</div>
               </div>
-              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{...glassStatMini}}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{background: 'radial-gradient(circle at center, rgba(193,232,255,0.06) 0%, transparent 70%)'}}></div>
-                <div className="font-black text-xl relative" style={{color: '#C1E8FF'}}>{stats.total_nodes || 0}</div>
-                <div className="font-semibold" style={{color: '#5483B3'}}>Services</div>
+              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{ ...glassStatMini }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle at center, rgba(193,232,255,0.06) 0%, transparent 70%)' }}></div>
+                <div className="font-black text-xl relative" style={{ color: '#C1E8FF' }}>{stats.total_nodes || 0}</div>
+                <div className="font-semibold" style={{ color: '#5483B3' }}>Services</div>
               </div>
-              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{...glassStatMini}}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{background: 'radial-gradient(circle at center, rgba(193,232,255,0.06) 0%, transparent 70%)'}}></div>
-                <div className="font-black text-xl relative" style={{color: '#C1E8FF'}}>{stats.lateral_movement_paths || 0}</div>
-                <div className="font-semibold" style={{color: '#5483B3'}}>Lateral Paths</div>
+              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{ ...glassStatMini }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle at center, rgba(193,232,255,0.06) 0%, transparent 70%)' }}></div>
+                <div className="font-black text-xl relative" style={{ color: '#C1E8FF' }}>{stats.lateral_movement_paths || 0}</div>
+                <div className="font-semibold" style={{ color: '#5483B3' }}>Lateral Paths</div>
               </div>
-              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{...glassStatMini}}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{background: 'radial-gradient(circle at center, rgba(125,160,202,0.06) 0%, transparent 70%)'}}></div>
-                <div className="font-black text-xl relative" style={{color: '#7DA0CA'}}>{stats.total_edges || 0}</div>
-                <div className="font-semibold" style={{color: '#5483B3'}}>Connections</div>
+              <div className="p-2.5 text-center hover:scale-[1.04] transition-all cursor-default relative overflow-hidden group" style={{ ...glassStatMini }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle at center, rgba(125,160,202,0.06) 0%, transparent 70%)' }}></div>
+                <div className="font-black text-xl relative" style={{ color: '#7DA0CA' }}>{stats.total_edges || 0}</div>
+                <div className="font-semibold" style={{ color: '#5483B3' }}>Connections</div>
               </div>
             </div>
           </div>
@@ -551,18 +551,18 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                 border: '1px solid rgba(84, 131, 179, 0.2)',
                 boxShadow: `0 0 40px ${exposure.severity === 'CRITICAL' ? 'rgba(239,68,68,0.15)' : exposure.severity === 'HIGH' ? 'rgba(249,115,22,0.12)' : 'rgba(234,179,8,0.1)'}, inset 0 1px 0 rgba(193,232,255,0.05)`,
               }}>
-                <div className="absolute inset-0 rounded-2xl" style={{background: `radial-gradient(circle at 50% 40%, ${exposure.severity === 'CRITICAL' ? 'rgba(239,68,68,0.08)' : exposure.severity === 'HIGH' ? 'rgba(249,115,22,0.06)' : 'rgba(234,179,8,0.05)'} 0%, transparent 70%)`}}></div>
+                <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(circle at 50% 40%, ${exposure.severity === 'CRITICAL' ? 'rgba(239,68,68,0.08)' : exposure.severity === 'HIGH' ? 'rgba(249,115,22,0.06)' : 'rgba(234,179,8,0.05)'} 0%, transparent 70%)` }}></div>
                 {/* EXPOSURE label */}
-                <div className="font-bold tracking-[0.25em] mb-3 relative" style={{fontSize: '9px', color: '#5483B3'}}>EXPOSURE</div>
+                <div className="font-bold tracking-[0.25em] mb-3 relative" style={{ fontSize: '9px', color: '#5483B3' }}>EXPOSURE</div>
                 {/* Ring — empty donut, no text inside */}
-                <div className="relative" style={{width: 80, height: 80}}>
-                  <svg width="80" height="80" viewBox="0 0 80 80" style={{transform: 'rotate(-90deg)'}}>
+                <div className="relative" style={{ width: 80, height: 80 }}>
+                  <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
                     <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(84,131,179,0.12)" strokeWidth="5" />
                     <circle cx="40" cy="40" r="34" fill="none"
                       stroke={exposure.severity === 'CRITICAL' ? '#ef4444' : exposure.severity === 'HIGH' ? '#f97316' : '#eab308'}
                       strokeWidth="5" strokeLinecap="round"
                       strokeDasharray={`${Math.min(exposure.exposure_score, 100) / 100 * 213.6} 213.6`}
-                      style={{filter: `drop-shadow(0 0 6px ${exposure.severity === 'CRITICAL' ? 'rgba(239,68,68,0.5)' : exposure.severity === 'HIGH' ? 'rgba(249,115,22,0.4)' : 'rgba(234,179,8,0.35)'})`}}
+                      style={{ filter: `drop-shadow(0 0 6px ${exposure.severity === 'CRITICAL' ? 'rgba(239,68,68,0.5)' : exposure.severity === 'HIGH' ? 'rgba(249,115,22,0.4)' : 'rgba(234,179,8,0.35)'})` }}
                     />
                   </svg>
                 </div>
@@ -588,13 +588,13 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
               </div>
 
               {/* Scoring Rules Card */}
-              <div className="p-4 rounded-2xl flex flex-col justify-between" style={{
+              <div className="p-4 rounded-2xl flex flex-col" style={{
                 background: 'rgba(2, 16, 36, 0.5)',
                 border: '1px solid rgba(84, 131, 179, 0.15)',
                 boxShadow: 'inset 0 1px 0 rgba(193,232,255,0.04)',
               }}>
                 <div>
-                  <div className="text-[10px] font-bold tracking-[0.15em] mb-3" style={{color: '#5483B3'}}>SCORING CRITERIA</div>
+                  <div className="text-[10px] font-bold tracking-[0.15em] mb-3" style={{ color: '#5483B3' }}>SCORING CRITERIA</div>
                   <div className="flex flex-col gap-1.5">
                     {[
                       { color: '#ef4444', text: 'Open ports with critical CVEs' },
@@ -607,18 +607,18 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                         background: 'rgba(5, 38, 89, 0.4)',
                         border: '1px solid rgba(84, 131, 179, 0.12)',
                       }}>
-                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{background: item.color}}></div>
-                        <span className="text-[11px] font-medium" style={{color: '#7DA0CA'}}>{item.text}</span>
+                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: item.color }}></div>
+                        <span className="text-[11px] font-medium" style={{ color: '#7DA0CA' }}>{item.text}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="pt-2.5 mt-3" style={{borderTop: '1px solid rgba(84,131,179,0.1)'}}>
+                <div className="pt-2.5 mt-3" style={{ borderTop: '1px solid rgba(84,131,179,0.1)' }}>
                   <div className="flex gap-3 justify-between text-[10px] font-bold">
-                    <span style={{color: '#22c55e'}}>0-30 LOW</span>
-                    <span style={{color: '#eab308'}}>31-60 MED</span>
-                    <span style={{color: '#f97316'}}>61-80 HIGH</span>
-                    <span style={{color: '#ef4444'}}>81+ CRIT</span>
+                    <span style={{ color: '#22c55e' }}>0-30 LOW</span>
+                    <span style={{ color: '#eab308' }}>31-60 MED</span>
+                    <span style={{ color: '#f97316' }}>61-80 HIGH</span>
+                    <span style={{ color: '#ef4444' }}>81+ CRIT</span>
                   </div>
                 </div>
               </div>
@@ -635,7 +635,7 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
           backdropFilter: 'blur(10px)',
         }}>
           {/* Label */}
-          <div className="font-bold text-xs tracking-[0.2em] mb-2.5" style={{color: '#5483B3'}}>ATTACK SIMULATION</div>
+          <div className="font-bold text-xs tracking-[0.2em] mb-2.5" style={{ color: '#5483B3' }}>ATTACK SIMULATION</div>
 
           {/* Controls Row */}
           <div className="flex items-center gap-3">
@@ -649,17 +649,17 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
             }}>
               <button onClick={startSim} disabled={simPlaying}
                 className="px-5 py-2 text-xs font-bold tracking-wider transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
-                style={{color: '#C1E8FF', borderRight: '1px solid rgba(84,131,179,0.2)'}}>
+                style={{ color: '#C1E8FF', borderRight: '1px solid rgba(84,131,179,0.2)' }}>
                 {simStep >= 0 && !simPlaying ? 'RESUME' : 'START'}
               </button>
               <button onClick={pauseSim} disabled={!simPlaying}
                 className="px-5 py-2 text-xs font-bold tracking-wider transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
-                style={{color: '#eab308', borderRight: '1px solid rgba(84,131,179,0.2)'}}>
+                style={{ color: '#eab308', borderRight: '1px solid rgba(84,131,179,0.2)' }}>
                 PAUSE
               </button>
               <button onClick={resetSim}
                 className="px-5 py-2 text-xs font-bold tracking-wider transition-all hover:bg-white/5"
-                style={{color: '#7DA0CA'}}>
+                style={{ color: '#7DA0CA' }}>
                 ↺ RESET
               </button>
             </div>
@@ -671,10 +671,10 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
             </button>
 
             {/* Step Info */}
-            <div className="ml-auto flex items-center gap-3 text-xs" style={{color: '#5483B3'}}>
+            <div className="ml-auto flex items-center gap-3 text-xs" style={{ color: '#5483B3' }}>
               <span className="font-mono">{simStep + 1} / {simulation.steps.length}</span>
               {simStep >= 0 && simulation.steps[simStep] && (
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold" style={{background: 'rgba(5,38,89,0.4)', border: '1px solid rgba(84,131,179,0.15)', color: '#C1E8FF'}}>
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold" style={{ background: 'rgba(5,38,89,0.4)', border: '1px solid rgba(84,131,179,0.15)', color: '#C1E8FF' }}>
                   {simulation.steps[simStep].action}: {simulation.steps[simStep].service}
                 </span>
               )}
@@ -689,15 +689,15 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
           borderBottom: '1px solid rgba(84, 131, 179, 0.1)',
           background: 'rgba(5, 38, 89, 0.2)',
         }}>
-          <span className="font-bold mr-2" style={{color: '#7DA0CA'}}>STEP {simStep + 1}:</span>
-          <span style={{color: '#C1E8FF'}}>{simulation.steps[simStep].description}</span>
+          <span className="font-bold mr-2" style={{ color: '#7DA0CA' }}>STEP {simStep + 1}:</span>
+          <span style={{ color: '#C1E8FF' }}>{simulation.steps[simStep].description}</span>
           {simulation.steps[simStep].mitre_id && (
-            <span className="ml-3 px-2 py-0.5 rounded text-xs font-mono" style={{background: 'rgba(84, 131, 179, 0.2)', color: '#7DA0CA'}}>
+            <span className="ml-3 px-2 py-0.5 rounded text-xs font-mono" style={{ background: 'rgba(84, 131, 179, 0.2)', color: '#7DA0CA' }}>
               {simulation.steps[simStep].mitre_id}
             </span>
           )}
           {simulation.steps[simStep].technique && (
-            <span className="ml-2 text-xs" style={{color: '#5483B3'}}>({simulation.steps[simStep].technique})</span>
+            <span className="ml-2 text-xs" style={{ color: '#5483B3' }}>({simulation.steps[simStep].technique})</span>
           )}
         </div>
       )}
@@ -705,39 +705,38 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
       {/* Canvas */}
       <div className="relative overflow-hidden" style={{ height: '480px', background: '#021024' }}>
         {/* Atmospheric glow orbs behind canvas */}
-        <div className="absolute inset-0 pointer-events-none" style={{zIndex: 0}}>
-          <div className="absolute w-64 h-64 rounded-full blur-[100px] opacity-20" style={{top: '10%', left: '15%', background: 'radial-gradient(circle, rgba(84,131,179,0.5) 0%, transparent 70%)'}}></div>
-          <div className="absolute w-48 h-48 rounded-full blur-[80px] opacity-15" style={{bottom: '15%', right: '20%', background: 'radial-gradient(circle, rgba(5,38,89,0.7) 0%, transparent 70%)'}}></div>
-          <div className="absolute w-32 h-32 rounded-full blur-[60px] opacity-10" style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'radial-gradient(circle, rgba(193,232,255,0.3) 0%, transparent 70%)'}}></div>
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+          <div className="absolute w-64 h-64 rounded-full blur-[100px] opacity-20" style={{ top: '10%', left: '15%', background: 'radial-gradient(circle, rgba(84,131,179,0.5) 0%, transparent 70%)' }}></div>
+          <div className="absolute w-48 h-48 rounded-full blur-[80px] opacity-15" style={{ bottom: '15%', right: '20%', background: 'radial-gradient(circle, rgba(5,38,89,0.7) 0%, transparent 70%)' }}></div>
+          <div className="absolute w-32 h-32 rounded-full blur-[60px] opacity-10" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'radial-gradient(circle, rgba(193,232,255,0.3) 0%, transparent 70%)' }}></div>
         </div>
         {/* Vignette overlay */}
-        <div className="absolute inset-0 pointer-events-none" style={{zIndex: 1, background: 'radial-gradient(ellipse at center, transparent 50%, rgba(2,16,36,0.5) 100%)'}}></div>
-        <canvas ref={canvasRef} className="w-full h-full cursor-crosshair" style={{position: 'relative', zIndex: 2}} />
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1, background: 'radial-gradient(ellipse at center, transparent 50%, rgba(2,16,36,0.5) 100%)' }}></div>
+        <canvas ref={canvasRef} className="w-full h-full cursor-crosshair" style={{ position: 'relative', zIndex: 2 }} />
 
         {/* Edge Hover Tooltip */}
         {hoveredEdge && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 p-3 text-sm max-w-md z-10" style={glassTooltip}>
             <div className="flex items-center gap-2 mb-2">
               {hoveredEdge.mitre_id && (
-                <span className="px-2 py-0.5 rounded font-mono text-xs font-bold" style={{background: 'rgba(84, 131, 179, 0.3)', color: '#7DA0CA'}}>
+                <span className="px-2 py-0.5 rounded font-mono text-xs font-bold" style={{ background: 'rgba(84, 131, 179, 0.3)', color: '#7DA0CA' }}>
                   {hoveredEdge.mitre_id}
                 </span>
               )}
-              <span className="font-bold" style={{color: '#C1E8FF'}}>{hoveredEdge.technique || hoveredEdge.type}</span>
-              <span className={`ml-auto px-2 py-0.5 rounded text-xs font-bold ${
-                hoveredEdge.category === 'credential_reuse' ? 'bg-red-900/50 text-red-300' :
-                hoveredEdge.category === 'exploitation' ? 'bg-orange-900/50 text-orange-300' :
-                hoveredEdge.category === 'tunneling' ? 'text-white' :
-                hoveredEdge.category === 'exfiltration' ? 'bg-purple-900/50 text-purple-300' :
-                'text-gray-300'
-              }`} style={hoveredEdge.category === 'tunneling' ? {background: 'rgba(84,131,179,0.3)'} : {}}>
+              <span className="font-bold" style={{ color: '#C1E8FF' }}>{hoveredEdge.technique || hoveredEdge.type}</span>
+              <span className={`ml-auto px-2 py-0.5 rounded text-xs font-bold ${hoveredEdge.category === 'credential_reuse' ? 'bg-red-900/50 text-red-300' :
+                  hoveredEdge.category === 'exploitation' ? 'bg-orange-900/50 text-orange-300' :
+                    hoveredEdge.category === 'tunneling' ? 'text-white' :
+                      hoveredEdge.category === 'exfiltration' ? 'bg-purple-900/50 text-purple-300' :
+                        'text-gray-300'
+                }`} style={hoveredEdge.category === 'tunneling' ? { background: 'rgba(84,131,179,0.3)' } : {}}>
                 {hoveredEdge.category?.toUpperCase()}
               </span>
             </div>
-            <div className="text-xs" style={{color: '#7DA0CA'}}>{hoveredEdge.label}</div>
+            <div className="text-xs" style={{ color: '#7DA0CA' }}>{hoveredEdge.label}</div>
             <div className="flex gap-4 mt-2 text-xs">
               <span className="text-red-400">Risk: {hoveredEdge.risk_score}/10</span>
-              <span style={{color: '#7DA0CA'}}>Difficulty: {hoveredEdge.difficulty}/7</span>
+              <span style={{ color: '#7DA0CA' }}>Difficulty: {hoveredEdge.difficulty}/7</span>
             </div>
           </div>
         )}
@@ -745,41 +744,40 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
         {/* Node Info Panel */}
         {hoveredNode && !selectedNode && (
           <div className="absolute top-3 right-3 p-4 text-sm max-w-xs" style={glassTooltip}>
-            <div className="font-bold mb-2 text-base" style={{color: '#C1E8FF'}}>{hoveredNode.service}</div>
-            <div className="space-y-1 text-xs" style={{color: '#7DA0CA'}}>
-              <div><span style={{color: '#C1E8FF'}}>Port:</span> {hoveredNode.port}</div>
-              <div><span style={{color: '#C1E8FF'}}>Risk:</span> {hoveredNode.risk}</div>
-              <div><span style={{color: '#C1E8FF'}}>Role:</span> {hoveredNode.role?.toUpperCase()}</div>
+            <div className="font-bold mb-2 text-base" style={{ color: '#C1E8FF' }}>{hoveredNode.service}</div>
+            <div className="space-y-1 text-xs" style={{ color: '#7DA0CA' }}>
+              <div><span style={{ color: '#C1E8FF' }}>Port:</span> {hoveredNode.port}</div>
+              <div><span style={{ color: '#C1E8FF' }}>Risk:</span> {hoveredNode.risk}</div>
+              <div><span style={{ color: '#C1E8FF' }}>Role:</span> {hoveredNode.role?.toUpperCase()}</div>
               {graphData?.blast_radii?.[hoveredNode.id] && (
                 <div><span className="text-red-400">Blast Radius:</span> {graphData.blast_radii[hoveredNode.id].reachable_count} nodes ({graphData.blast_radii[hoveredNode.id].percentage}%)</div>
               )}
             </div>
-            <div className="text-xs mt-2 italic" style={{color: '#5483B3'}}>Click to see blast radius</div>
+            <div className="text-xs mt-2 italic" style={{ color: '#5483B3' }}>Click to see blast radius</div>
           </div>
         )}
 
         {/* Selected Node / Blast Radius Panel */}
         {selectedNode && (
-          <div className="absolute top-3 right-3 p-4 text-sm max-w-xs" style={{...glassTooltip, borderColor: 'rgba(239, 68, 68, 0.3)'}}>
+          <div className="absolute top-3 right-3 p-4 text-sm max-w-xs" style={{ ...glassTooltip, borderColor: 'rgba(239, 68, 68, 0.3)' }}>
             <div className="flex justify-between items-center mb-2">
               <div className="text-red-400 font-bold text-base">BLAST RADIUS</div>
               <button onClick={() => setSelectedNode(null)} className="glass-btn px-3 py-1 rounded text-xs">✕ Close</button>
             </div>
-            <div className="font-bold" style={{color: '#C1E8FF'}}>{selectedNode.service} (Port {selectedNode.port})</div>
+            <div className="font-bold" style={{ color: '#C1E8FF' }}>{selectedNode.service} (Port {selectedNode.port})</div>
             {graphData?.blast_radii?.[selectedNode.id] && (
               <div className="mt-2 space-y-1 text-xs">
                 <div className="text-red-400">Reachable: {graphData.blast_radii[selectedNode.id].reachable_count} nodes</div>
                 <div className="text-orange-400">Coverage: {graphData.blast_radii[selectedNode.id].percentage}% of network</div>
-                <div className={`font-bold ${
-                  graphData.blast_radii[selectedNode.id].severity === 'critical' ? 'text-red-500' :
-                  graphData.blast_radii[selectedNode.id].severity === 'high' ? 'text-orange-500' : 'text-yellow-500'
-                }`}>
+                <div className={`font-bold ${graphData.blast_radii[selectedNode.id].severity === 'critical' ? 'text-red-500' :
+                    graphData.blast_radii[selectedNode.id].severity === 'high' ? 'text-orange-500' : 'text-yellow-500'
+                  }`}>
                   Severity: {graphData.blast_radii[selectedNode.id].severity?.toUpperCase()}
                 </div>
               </div>
             )}
             {graphData?.risk_propagation?.[selectedNode.id] && (
-              <div className="mt-2 text-xs" style={{color: '#5483B3'}}>
+              <div className="mt-2 text-xs" style={{ color: '#5483B3' }}>
                 Compromise probability shown on each node
               </div>
             )}
@@ -787,21 +785,21 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
         )}
 
         {/* Legend */}
-        <div className="absolute bottom-3 left-3 p-3 text-xs" style={{...glassTooltip, borderColor: 'rgba(84, 131, 179, 0.15)'}}>
-          <div className="font-bold mb-1" style={{color: '#C1E8FF'}}>Edge Colors = Attack Category:</div>
+        <div className="absolute bottom-3 left-3 p-3 text-xs" style={{ ...glassTooltip, borderColor: 'rgba(84, 131, 179, 0.15)' }}>
+          <div className="font-bold mb-1" style={{ color: '#C1E8FF' }}>Edge Colors = Attack Category:</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-red-500 rounded"></div><span style={{color: '#7DA0CA'}}>Credential Reuse</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-orange-500 rounded"></div><span style={{color: '#7DA0CA'}}>Exploitation</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-1 rounded" style={{background: '#5483B3'}}></div><span style={{color: '#7DA0CA'}}>Tunneling</span></div>
-            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-purple-500 rounded"></div><span style={{color: '#7DA0CA'}}>Exfiltration</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-red-500 rounded"></div><span style={{ color: '#7DA0CA' }}>Credential Reuse</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-orange-500 rounded"></div><span style={{ color: '#7DA0CA' }}>Exploitation</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-1 rounded" style={{ background: '#5483B3' }}></div><span style={{ color: '#7DA0CA' }}>Tunneling</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-1 bg-purple-500 rounded"></div><span style={{ color: '#7DA0CA' }}>Exfiltration</span></div>
           </div>
-          <div className="mt-1 italic" style={{color: '#5483B3'}}>Solid = Lateral | Dashed = Horizontal</div>
+          <div className="mt-1 italic" style={{ color: '#5483B3' }}>Solid = Lateral | Dashed = Horizontal</div>
         </div>
       </div>
 
       {/* ── Tabbed Bottom Panel ── */}
-      <div style={{borderTop: '1px solid rgba(84, 131, 179, 0.15)', background: 'rgba(2, 16, 36, 0.5)', borderRadius: '0 0 18px 18px'}}>
-        <div className="flex" style={{borderBottom: '1px solid rgba(84, 131, 179, 0.12)', background: 'linear-gradient(90deg, rgba(5, 38, 89, 0.2) 0%, transparent 100%)'}}>
+      <div style={{ borderTop: '1px solid rgba(84, 131, 179, 0.15)', background: 'rgba(2, 16, 36, 0.5)', borderRadius: '0 0 18px 18px' }}>
+        <div className="flex" style={{ borderBottom: '1px solid rgba(84, 131, 179, 0.12)', background: 'linear-gradient(90deg, rgba(5, 38, 89, 0.2) 0%, transparent 100%)' }}>
           {['chains', 'paths', 'mitre', 'cve', 'whatif'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={`px-4 py-2.5 text-xs font-bold tracking-wider transition-all relative group`}
@@ -811,7 +809,7 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                 background: activeTab === tab ? 'rgba(5, 38, 89, 0.3)' : 'transparent',
               }}>
               {tab === 'chains' ? 'ATTACK CHAINS' : tab === 'paths' ? 'CRITICAL PATHS' : tab === 'mitre' ? 'MITRE ATT&CK' : tab === 'cve' ? `CVE DATABASE${cveData?.total_cves ? ` (${cveData.total_cves})` : ''}` : 'WHAT-IF'}
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] group-hover:w-full transition-all duration-300" style={{background: 'linear-gradient(90deg, #C1E8FF, #5483B3)'}}></span>
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] group-hover:w-full transition-all duration-300" style={{ background: 'linear-gradient(90deg, #C1E8FF, #5483B3)' }}></span>
             </button>
           ))}
         </div>
@@ -822,29 +820,29 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
             <div>
               {attackChains.classification && (
                 <div className="flex gap-3 mb-3">
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{background: 'rgba(84, 131, 179, 0.15)', border: '1px solid rgba(84, 131, 179, 0.25)'}}>
-                    <span className="text-xs font-bold" style={{color: '#5483B3'}}>⬤</span>
-                    <span className="text-xs" style={{color: '#C1E8FF'}}>{attackChains.classification.entry_points || 0} Entry</span>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{ background: 'rgba(84, 131, 179, 0.15)', border: '1px solid rgba(84, 131, 179, 0.25)' }}>
+                    <span className="text-xs font-bold" style={{ color: '#5483B3' }}>⬤</span>
+                    <span className="text-xs" style={{ color: '#C1E8FF' }}>{attackChains.classification.entry_points || 0} Entry</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{background: 'rgba(125, 160, 202, 0.1)', border: '1px solid rgba(125, 160, 202, 0.25)'}}>
-                    <span className="text-xs font-bold" style={{color: '#7DA0CA'}}>⬤</span>
-                    <span className="text-xs" style={{color: '#C1E8FF'}}>{attackChains.classification.pivot_nodes || 0} Pivot</span>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{ background: 'rgba(125, 160, 202, 0.1)', border: '1px solid rgba(125, 160, 202, 0.25)' }}>
+                    <span className="text-xs font-bold" style={{ color: '#7DA0CA' }}>⬤</span>
+                    <span className="text-xs" style={{ color: '#C1E8FF' }}>{attackChains.classification.pivot_nodes || 0} Pivot</span>
                   </div>
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{background: 'rgba(193, 232, 255, 0.08)', border: '1px solid rgba(193, 232, 255, 0.2)'}}>
-                    <span className="text-xs font-bold" style={{color: '#C1E8FF'}}>⬤</span>
-                    <span className="text-xs" style={{color: '#C1E8FF'}}>{attackChains.classification.target_nodes || 0} Target</span>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{ background: 'rgba(193, 232, 255, 0.08)', border: '1px solid rgba(193, 232, 255, 0.2)' }}>
+                    <span className="text-xs font-bold" style={{ color: '#C1E8FF' }}>⬤</span>
+                    <span className="text-xs" style={{ color: '#C1E8FF' }}>{attackChains.classification.target_nodes || 0} Target</span>
                   </div>
                 </div>
               )}
               <div className="space-y-1.5">
                 {attackChains.chains.slice(0, 10).map((chain, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm p-2 rounded-lg" title={chain.description}
-                       style={{background: 'rgba(5, 38, 89, 0.25)', border: '1px solid rgba(84, 131, 179, 0.12)'}}>
+                    style={{ background: 'rgba(5, 38, 89, 0.25)', border: '1px solid rgba(84, 131, 179, 0.12)' }}>
                     <span className={`font-bold shrink-0 ${chain.type === 'lateral_movement' ? 'text-red-400' : 'text-orange-400'}`}>
                       {chain.type === 'lateral_movement' ? '⤷' : '↔'}
                     </span>
-                    <span className="flex-1" style={{color: '#C1E8FF'}}>{chain.from} → {chain.to}</span>
-                    {chain.mitre_id && <span className="px-1.5 py-0.5 rounded text-xs font-mono shrink-0" style={{background: 'rgba(84, 131, 179, 0.25)', color: '#7DA0CA'}}>{chain.mitre_id}</span>}
+                    <span className="flex-1" style={{ color: '#C1E8FF' }}>{chain.from} → {chain.to}</span>
+                    {chain.mitre_id && <span className="px-1.5 py-0.5 rounded text-xs font-mono shrink-0" style={{ background: 'rgba(84, 131, 179, 0.25)', color: '#7DA0CA' }}>{chain.mitre_id}</span>}
                     <span className="text-red-400 text-xs shrink-0">{chain.risk_score}</span>
                   </div>
                 ))}
@@ -855,7 +853,7 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
           {/* CRITICAL PATHS TAB */}
           {activeTab === 'paths' && criticalPaths.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs mb-2" style={{color: '#5483B3'}}>Paths found using BFS (shortest) and Dijkstra (deadliest) algorithms</div>
+              <div className="text-xs mb-2" style={{ color: '#5483B3' }}>Paths found using BFS (shortest) and Dijkstra (deadliest) algorithms</div>
               {criticalPaths.slice(0, 6).map((path, i) => (
                 <div key={i} className={`p-2 rounded-lg text-sm`} style={{
                   background: path.type === 'deadliest' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(5, 38, 89, 0.3)',
@@ -863,15 +861,15 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                 }}>
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`px-1.5 py-0.5 rounded text-xs font-bold ${path.type === 'deadliest' ? 'bg-red-600 text-white' : 'text-white'}`}
-                          style={path.type !== 'deadliest' ? {background: '#052659'} : {}}>
+                      style={path.type !== 'deadliest' ? { background: '#052659' } : {}}>
                       {path.type === 'deadliest' ? 'x DEADLIEST' : '// SHORTEST'}
                     </span>
-                    <span className="text-xs" style={{color: '#5483B3'}}>{path.hops} hops | Risk: {path.total_risk}</span>
+                    <span className="text-xs" style={{ color: '#5483B3' }}>{path.hops} hops | Risk: {path.total_risk}</span>
                   </div>
-                  <div className="font-mono text-xs" style={{color: '#C1E8FF'}}>
+                  <div className="font-mono text-xs" style={{ color: '#C1E8FF' }}>
                     {path.path.map(p => p.replace('port_', ':')).join(' → ')}
                   </div>
-                  <div className="text-xs mt-1" style={{color: '#5483B3'}}>{path.from_service} → {path.to_service}</div>
+                  <div className="text-xs mt-1" style={{ color: '#5483B3' }}>{path.from_service} → {path.to_service}</div>
                 </div>
               ))}
             </div>
@@ -880,18 +878,17 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
           {/* MITRE ATT&CK TAB */}
           {activeTab === 'mitre' && mitreData.techniques && (
             <div>
-              <div className="text-xs mb-3" style={{color: '#5483B3'}}>{mitreData.total_unique_techniques} unique techniques detected across all attack paths</div>
+              <div className="text-xs mb-3" style={{ color: '#5483B3' }}>{mitreData.total_unique_techniques} unique techniques detected across all attack paths</div>
               {mitreData.categories && (
                 <div className="flex gap-2 mb-3 flex-wrap">
                   {Object.entries(mitreData.categories).map(([cat, count]) => (
-                    <div key={cat} className={`px-2 py-1 rounded-lg text-xs font-bold ${
-                      cat === 'credential_reuse' ? 'bg-red-900/40 text-red-300' :
-                      cat === 'exploitation' ? 'bg-orange-900/40 text-orange-300' :
-                      cat === 'tunneling' ? 'text-white' :
-                      cat === 'exfiltration' ? 'bg-purple-900/40 text-purple-300' :
-                      cat === 'credential_theft' ? 'bg-pink-900/40 text-pink-300' :
-                      'text-white'
-                    }`} style={['tunneling', 'discovery'].includes(cat) ? {background: 'rgba(84,131,179,0.25)', color: '#C1E8FF'} : {}}>
+                    <div key={cat} className={`px-2 py-1 rounded-lg text-xs font-bold ${cat === 'credential_reuse' ? 'bg-red-900/40 text-red-300' :
+                        cat === 'exploitation' ? 'bg-orange-900/40 text-orange-300' :
+                          cat === 'tunneling' ? 'text-white' :
+                            cat === 'exfiltration' ? 'bg-purple-900/40 text-purple-300' :
+                              cat === 'credential_theft' ? 'bg-pink-900/40 text-pink-300' :
+                                'text-white'
+                      }`} style={['tunneling', 'discovery'].includes(cat) ? { background: 'rgba(84,131,179,0.25)', color: '#C1E8FF' } : {}}>
                       {cat.replace('_', ' ').toUpperCase()}: {count}
                     </div>
                   ))}
@@ -899,10 +896,10 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
               )}
               <div className="space-y-1">
                 {mitreData.techniques.map((tech, i) => (
-                  <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg text-sm" style={{background: 'rgba(5, 38, 89, 0.3)'}}>
-                    <span className="px-1.5 py-0.5 rounded font-mono text-xs font-bold w-24 text-center" style={{background: 'rgba(84, 131, 179, 0.25)', color: '#7DA0CA'}}>{tech.id}</span>
-                    <span className="flex-1" style={{color: '#C1E8FF'}}>{tech.name}</span>
-                    <span className="text-xs" style={{color: '#5483B3'}}>{tech.count}×</span>
+                  <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg text-sm" style={{ background: 'rgba(5, 38, 89, 0.3)' }}>
+                    <span className="px-1.5 py-0.5 rounded font-mono text-xs font-bold w-24 text-center" style={{ background: 'rgba(84, 131, 179, 0.25)', color: '#7DA0CA' }}>{tech.id}</span>
+                    <span className="flex-1" style={{ color: '#C1E8FF' }}>{tech.name}</span>
+                    <span className="text-xs" style={{ color: '#5483B3' }}>{tech.count}×</span>
                   </div>
                 ))}
               </div>
@@ -912,7 +909,7 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
           {/* WHAT-IF TAB */}
           {activeTab === 'whatif' && whatIfRecs.length > 0 && (
             <div>
-              <div className="text-xs mb-3" style={{color: '#5483B3'}}>Top ports to close for maximum attack surface reduction:</div>
+              <div className="text-xs mb-3" style={{ color: '#5483B3' }}>Top ports to close for maximum attack surface reduction:</div>
               <div className="space-y-2">
                 {whatIfRecs.map((rec, i) => (
                   <div key={i} className="p-3 rounded-lg" style={{
@@ -921,20 +918,20 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                   }}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-lg font-bold text-red-400">#{i + 1}</span>
-                      <span className="font-bold" style={{color: '#C1E8FF'}}>Port {rec.removed_port} ({rec.removed_service})</span>
+                      <span className="font-bold" style={{ color: '#C1E8FF' }}>Port {rec.removed_port} ({rec.removed_service})</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs mt-2">
                       <div className="text-center">
                         <div className="text-red-400 font-bold text-base">{rec.paths_eliminated}</div>
-                        <div style={{color: '#5483B3'}}>Paths Eliminated</div>
+                        <div style={{ color: '#5483B3' }}>Paths Eliminated</div>
                       </div>
                       <div className="text-center">
                         <div className="text-orange-400 font-bold text-base">-{rec.exposure_reduction} pts</div>
-                        <div style={{color: '#5483B3'}}>Exposure Drop</div>
+                        <div style={{ color: '#5483B3' }}>Exposure Drop</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-bold text-base" style={{color: '#7DA0CA'}}>{rec.remaining_paths}</div>
-                        <div style={{color: '#5483B3'}}>Remaining</div>
+                        <div className="font-bold text-base" style={{ color: '#7DA0CA' }}>{rec.remaining_paths}</div>
+                        <div style={{ color: '#5483B3' }}>Remaining</div>
                       </div>
                     </div>
                   </div>
@@ -950,21 +947,21 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                 <>
                   {/* CVE Summary Badges */}
                   <div className="flex gap-3 mb-4 flex-wrap">
-                    <div className="px-3 py-1.5 rounded-lg" style={{background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)'}}>
+                    <div className="px-3 py-1.5 rounded-lg" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
                       <span className="text-red-400 font-bold text-lg mr-1">{cveData.critical_cves || 0}</span>
-                      <span className="text-xs" style={{color: '#5483B3'}}>Critical</span>
+                      <span className="text-xs" style={{ color: '#5483B3' }}>Critical</span>
                     </div>
-                    <div className="px-3 py-1.5 rounded-lg" style={{background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.2)'}}>
+                    <div className="px-3 py-1.5 rounded-lg" style={{ background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.2)' }}>
                       <span className="text-orange-400 font-bold text-lg mr-1">{cveData.high_cves || 0}</span>
-                      <span className="text-xs" style={{color: '#5483B3'}}>High</span>
+                      <span className="text-xs" style={{ color: '#5483B3' }}>High</span>
                     </div>
-                    <div className="px-3 py-1.5 rounded-lg" style={{background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.2)'}}>
+                    <div className="px-3 py-1.5 rounded-lg" style={{ background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.2)' }}>
                       <span className="text-yellow-400 font-bold text-lg mr-1">{cveData.medium_cves || 0}</span>
-                      <span className="text-xs" style={{color: '#5483B3'}}>Medium</span>
+                      <span className="text-xs" style={{ color: '#5483B3' }}>Medium</span>
                     </div>
                     <div className="ml-auto px-3 py-1.5 rounded-lg" style={glassStatMini}>
-                      <span className="font-bold text-lg mr-1" style={{color: '#C1E8FF'}}>{cveData.total_cves}</span>
-                      <span className="text-xs" style={{color: '#5483B3'}}>Total CVEs</span>
+                      <span className="font-bold text-lg mr-1" style={{ color: '#C1E8FF' }}>{cveData.total_cves}</span>
+                      <span className="text-xs" style={{ color: '#5483B3' }}>Total CVEs</span>
                     </div>
                   </div>
 
@@ -974,41 +971,39 @@ const GraphView = ({ graphData, exposure, attackChains, cveData }) => {
                       <div key={i} className={`p-3 rounded-lg text-sm`} style={{
                         background: cve.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.08)' :
                           cve.severity === 'HIGH' ? 'rgba(249, 115, 22, 0.08)' :
-                          cve.severity === 'MEDIUM' ? 'rgba(234, 179, 8, 0.08)' :
-                          'rgba(5, 38, 89, 0.3)',
-                        border: `1px solid ${
-                          cve.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.2)' :
-                          cve.severity === 'HIGH' ? 'rgba(249, 115, 22, 0.2)' :
-                          cve.severity === 'MEDIUM' ? 'rgba(234, 179, 8, 0.2)' :
-                          'rgba(84, 131, 179, 0.15)'
-                        }`,
+                            cve.severity === 'MEDIUM' ? 'rgba(234, 179, 8, 0.08)' :
+                              'rgba(5, 38, 89, 0.3)',
+                        border: `1px solid ${cve.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.2)' :
+                            cve.severity === 'HIGH' ? 'rgba(249, 115, 22, 0.2)' :
+                              cve.severity === 'MEDIUM' ? 'rgba(234, 179, 8, 0.2)' :
+                                'rgba(84, 131, 179, 0.15)'
+                          }`,
                       }}>
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <a href={cve.url} target="_blank" rel="noopener noreferrer"
-                            className="font-mono font-bold hover:underline" style={{color: '#7DA0CA'}}>
+                            className="font-mono font-bold hover:underline" style={{ color: '#7DA0CA' }}>
                             {cve.id}
                           </a>
-                          <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                            cve.severity === 'CRITICAL' ? 'bg-red-600 text-white' :
-                            cve.severity === 'HIGH' ? 'bg-orange-600 text-white' :
-                            cve.severity === 'MEDIUM' ? 'bg-yellow-600 text-black' :
-                            'bg-green-600 text-white'
-                          }`}>
+                          <span className={`px-2 py-0.5 rounded text-xs font-bold ${cve.severity === 'CRITICAL' ? 'bg-red-600 text-white' :
+                              cve.severity === 'HIGH' ? 'bg-orange-600 text-white' :
+                                cve.severity === 'MEDIUM' ? 'bg-yellow-600 text-black' :
+                                  'bg-green-600 text-white'
+                            }`}>
                             {cve.severity}
                           </span>
-                          <span className="font-bold" style={{color: '#C1E8FF'}}>CVSS {cve.score}</span>
-                          <span className="text-xs ml-auto" style={{color: '#5483B3'}}>Port {cve.port} • {cve.service}</span>
+                          <span className="font-bold" style={{ color: '#C1E8FF' }}>CVSS {cve.score}</span>
+                          <span className="text-xs ml-auto" style={{ color: '#5483B3' }}>Port {cve.port} • {cve.service}</span>
                         </div>
-                        <div className="text-xs mt-1" style={{color: '#7DA0CA'}}>{cve.description}</div>
+                        <div className="text-xs mt-1" style={{ color: '#7DA0CA' }}>{cve.description}</div>
                       </div>
                     ))}
                   </div>
                 </>
               ) : (
-                <div className="text-center py-8" style={{color: '#5483B3'}}>
-                  <div className="text-2xl mb-2" style={{fontFamily:'monospace', color:'#C1E8FF'}}>[ ? ]</div>
+                <div className="text-center py-8" style={{ color: '#5483B3' }}>
+                  <div className="text-2xl mb-2" style={{ fontFamily: 'monospace', color: '#C1E8FF' }}>[ ? ]</div>
                   <div className="text-sm">{cveData ? 'No CVEs found for discovered services' : 'CVE data will appear after scan completes'}</div>
-                  <div className="text-xs mt-1" style={{color: 'rgba(84, 131, 179, 0.5)'}}>Powered by NIST National Vulnerability Database (NVD)</div>
+                  <div className="text-xs mt-1" style={{ color: 'rgba(84, 131, 179, 0.5)' }}>Powered by NIST National Vulnerability Database (NVD)</div>
                 </div>
               )}
             </div>
