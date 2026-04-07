@@ -22,10 +22,10 @@ Open your browser and go to:
 
 ## Features
 
-✅ **Interactive Endpoints** - Click to try each API  
-✅ **Auto-generated Documentation** - From Python docstrings  
-✅ **Request/Response Examples** - Built-in schema validation  
-✅ **Test Directly** - No separate tool needed  
+ **Interactive Endpoints** - Click to try each API  
+ **Auto-generated Documentation** - From Python docstrings  
+ **Request/Response Examples** - Built-in schema validation  
+ **Test Directly** - No separate tool needed  
 
 ## What You Can Do
 
