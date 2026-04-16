@@ -1,0 +1,50 @@
+Host,Port,Protocol,Service,Version,Known_Vuln,CVE_ID,Category
+192.168.56.10,21,TCP,FTP,vsftpd 2.3.4,Backdoor command execution,CVE-2011-2523,Entry
+192.168.56.10,22,TCP,SSH,OpenSSH 4.7p1,Multiple auth bypass issues,CVE-2008-5161,Pivot
+192.168.56.10,23,TCP,Telnet,Linux telnetd,Cleartext credentials,,Entry
+192.168.56.10,25,TCP,SMTP,Postfix smtpd,Open relay,,Pivot
+192.168.56.10,53,TCP,DNS,ISC BIND 9.4.2,Cache poisoning,CVE-2008-1447,Target
+192.168.56.10,80,TCP,HTTP,Apache 2.2.8,Multiple vulnerabilities,CVE-2011-3192,Entry
+192.168.56.10,110,TCP,POP3,Dovecot pop3d,Cleartext credentials,,Pivot
+192.168.56.10,111,TCP,RPCBind,RPCBind 2,RPC enumeration,,Pivot
+192.168.56.10,139,TCP,NetBIOS-SSN,Samba 3.0.20,Username map script RCE,CVE-2007-2447,Pivot
+192.168.56.10,143,TCP,IMAP,Dovecot imapd,Cleartext credentials,,Pivot
+192.168.56.10,445,TCP,SMB,Samba 3.0.20,Username map script RCE,CVE-2007-2447,Pivot
+192.168.56.10,512,TCP,exec,rexecd,Remote execution no auth,,Pivot
+192.168.56.10,513,TCP,login,rlogind,Trust-based auth,,Pivot
+192.168.56.10,514,TCP,shell,rsh,Trust-based auth,,Pivot
+192.168.56.10,1099,TCP,RMI,Java RMI,Deserialization RCE,,Entry
+192.168.56.10,1524,TCP,Ingreslock,Metasploitable backdoor,Root shell,,Entry
+192.168.56.10,2049,TCP,NFS,NFSv2-4,World-readable exports,,Target
+192.168.56.10,2121,TCP,FTP,ProFTPD 1.3.1,Multiple vulns,CVE-2009-3639,Entry
+192.168.56.10,3306,TCP,MySQL,MySQL 5.0.51a,Default root no password,CVE-2012-2122,Target
+192.168.56.10,3632,TCP,distcc,distccd v1,Unauthenticated RCE,CVE-2004-2687,Entry
+192.168.56.10,5432,TCP,PostgreSQL,PostgreSQL 8.3.0,Default creds postgres/postgres,,Target
+192.168.56.10,5900,TCP,VNC,VNC,Password is password,,Entry
+192.168.56.10,6000,TCP,X11,X11,Open X display,,Pivot
+192.168.56.10,6667,TCP,IRC,UnrealIRCd 3.2.8.1,Backdoor RCE,CVE-2010-2075,Entry
+192.168.56.10,8009,TCP,AJP,Apache Jserv 1.3,Ghostcat,CVE-2020-1938,Entry
+192.168.56.10,8180,TCP,HTTP,Apache Tomcat 5.5,Default creds tomcat/tomcat,,Entry
+192.168.56.20,21,TCP,FTP,ProFTPD 1.3.5,mod_copy RCE,CVE-2015-3306,Entry
+192.168.56.20,22,TCP,SSH,OpenSSH 6.6.1p1,Weak key enumeration,,Pivot
+192.168.56.20,80,TCP,HTTP,Apache 2.4.7,Drupal / phpMyAdmin vulns,,Entry
+192.168.56.20,3306,TCP,MySQL,MySQL 5.5.x,Default / weak passwords,,Target
+192.168.56.20,5432,TCP,PostgreSQL,PostgreSQL 9.3,Default credentials,,Target
+192.168.56.20,8080,TCP,HTTP,Apache Tomcat 8,Manager default creds,,Entry
+192.168.56.20,6697,TCP,IRC,UnrealIRCd,Backdoor,,Entry
+192.168.56.30,21,TCP,FTP,FileZilla Server,Weak credentials,,Entry
+192.168.56.30,22,TCP,SSH,OpenSSH (bitvise),N/A,,Pivot
+192.168.56.30,80,TCP,HTTP,IIS 7.5,WebDAV misconfig,,Entry
+192.168.56.30,135,TCP,RPC,MS-RPC,MS08-067,,Pivot
+192.168.56.30,139,TCP,NetBIOS,Win NetBIOS-SSN,SMB enumeration,,Pivot
+192.168.56.30,445,TCP,SMB,SMBv1,EternalBlue MS17-010,CVE-2017-0144,Pivot
+192.168.56.30,1433,TCP,MSSQL,SQL Server 2008,Default SA password,,Target
+192.168.56.30,3306,TCP,MySQL,MySQL 5.5,Default creds,,Target
+192.168.56.30,3389,TCP,RDP,MS Terminal Services,BlueKeep,CVE-2019-0708,Entry
+192.168.56.30,5985,TCP,WinRM,WinRM HTTP,Pass-the-Hash,,Pivot
+192.168.56.30,8080,TCP,HTTP,Tomcat 8,Default manager creds,,Entry
+192.168.56.30,8585,TCP,HTTP,Jenkins,Unauthenticated script console,,Entry
+192.168.56.40,80,TCP,HTTP,DVWA,SQLi / XSS / CSRF / LFI / RFI / CmdInj,,Entry
+192.168.56.40,3306,TCP,MySQL,MySQL 5.7,Default root/root credentials,,Target
+192.168.56.40,8080,TCP,HTTP,Mutillidae II,OWASP Top 10 all categories,,Entry
+192.168.56.50,22,TCP,SSH,OpenSSH 9.x,N/A (hardened),,Pivot
