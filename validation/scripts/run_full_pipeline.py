@@ -56,12 +56,12 @@ next_run = max(run_numbers, default=0) + 1
 RUN_DIR = os.path.join(RESULTS_DIR, f"run_{next_run}", "netscan")
 os.makedirs(RUN_DIR, exist_ok=True)
 
-print(f"═══════════════════════════════════════════════════")
+print(f"===================================================")
 print(f"  NET_SCAN Validation Pipeline — Run #{next_run}")
 print(f"  Targets: {len(TARGETS)} hosts")
 print(f"  Port range: {START_PORT}–{END_PORT}")
 print(f"  Output: {RUN_DIR}")
-print(f"═══════════════════════════════════════════════════\n")
+print(f"===================================================\n")
 
 
 # ── Run pipeline ──────────────────────────────────────────────────────
@@ -69,9 +69,9 @@ all_results = {}
 scan_log = []
 
 for target in TARGETS:
-    print(f"\n{'─'*50}")
+    print(f"\n{'-'*50}")
     print(f"  Scanning: {target}")
-    print(f"{'─'*50}")
+    print(f"{'-'*50}")
 
     t_start = time.time()
 
@@ -116,7 +116,7 @@ for target in TARGETS:
         "cves": cve_data,
         "graph_statistics": graph.get("statistics", {}),
         "exposure": exposure,
-        "kill_chain_classification": graph.get("statistics", {}),
+        "kill_chain_classification": graph.get("mitre_summary", {}),
         "timing": {
             "scan_seconds": round(t_scan, 2),
             "total_seconds": round(t_total, 2),
@@ -131,7 +131,7 @@ for target in TARGETS:
         "open_ports_found": scan_data.get("scan_summary", {}).get("open_ports", 0),
     })
 
-    print(f"  ✓ {target} complete in {t_total:.1f}s | "
+    print(f"  [+] {target} complete in {t_total:.1f}s | "
           f"Open ports: {scan_data.get('scan_summary', {}).get('open_ports', 0)} | "
           f"NES: {exposure.get('severity', 'N/A')}")
 
@@ -145,8 +145,8 @@ log_path = os.path.join(RUN_DIR, "scan_log.json")
 with open(log_path, "w") as f:
     json.dump(scan_log, f, indent=2)
 
-print(f"\n{'═'*50}")
+print(f"\n{'='*50}")
 print(f"  Pipeline complete. Run #{next_run}")
 print(f"  Results: {output_path}")
 print(f"  Log:     {log_path}")
-print(f"{'═'*50}")
+print(f"{'='*50}")
