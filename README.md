@@ -92,4 +92,21 @@ To launch the integrated platform:
 3. Enter your **Target IP Address**, define thread scopes, and click **LAUNCH SYSTEM SCAN**. Watch the intelligence pipeline reconstruct the kill chain topology natively in the UI.
 
 ---
+
+## Validation Pipeline
+
+NET_SCAN includes a headless validation script designed to execute the network scanning engine and analytical backends against predefined target lists, outputting the analytical results in consolidated logs without needing the UI.
+
+To run the pipeline:
+
+1. Open a terminal and navigate into the `backend` directory.
+2. Execute the pipeline script:
+   ```bash
+   python ../validation/scripts/run_full_pipeline.py
+   ```
+   *(Ensure your Python virtual environment is activated if applicable).*
+
+Your analytical outputs, raw scans, and execution logs will be saved in an incremental folder at `validation/results/run_X/netscan/`.
+
+---
 *For more extensive academic details regarding algorithmic mathematical bounds, latency benchmarks, or MITRE scoring logic, please refer to the attached primary IEEE research document.*
