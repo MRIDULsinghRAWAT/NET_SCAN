@@ -40,6 +40,13 @@
 %  netH_critical3.jpg      Network H critical paths 3
 %  netH_mitre.jpg          Network H MITRE ATT&CK
 %  ipconfig_mridul2.jpg    scanning host ipconfig (session 2)
+%
+%  --- SESSION 3 (2026-05-03) ---
+%  netA_dashboard.jpg      Network A clean dashboard (NES=0)
+%  netC_whatif_smb.jpg     Network C What-If: SMB/RPC
+%  netC_whatif_netbios.jpg Network C What-If: NetBIOS/SMB
+%  ipconfig_mridul3.jpg    scanning host ipconfig (session 3)
+%  (ipconfig_lab.jpg)      lab machine ipconfig (reused from session 1)
 % ============================================================
 
 \documentclass[conference]{IEEEtran}
@@ -143,7 +150,7 @@ The What-If Analysis Engine allows defenders to simulate the real-time removal o
 To validate the heuristic mapping engine, CVE enrichment pipeline, Critical Paths Engine, and exposure scoring under real-world operational constraints, NET\_SCAN was deployed against \textbf{eight} distinct network environments exhibiting heterogeneous topological characteristics, service configurations, and exposure profiles.
 
 \subsection{Testing Environment}
-The experimental testbed comprised eight network segments accessible from the scanning host, each representing a fundamentally different network archetype. Figs.~\ref{fig:ipconfig} and \ref{fig:ipconfig2} confirm the network adapter configurations of the host machines used across all scanning sessions.
+The experimental testbed comprised eight network segments accessible from the scanning host, each representing a fundamentally different network archetype. Figs.~\ref{fig:ipconfig}, \ref{fig:ipconfig2}, and \ref{fig:ipconfig3} confirm the network adapter configurations of the host machines used across all scanning sessions.
 
 \begin{figure}[htbp]
 \centerline{
@@ -167,6 +174,12 @@ The experimental testbed comprised eight network segments accessible from the sc
 \centerline{\includegraphics[width=0.75\linewidth]{ipconfig_mridul2.jpg}}
 \caption{Scanning host \texttt{ipconfig} (session 2): Ethernet 2 adapter at 192.168.56.1; Wi-Fi adapter at 172.20.10.3 (subnet 255.255.255.240, gateway 172.20.10.1), confirming the active interfaces used for Networks G and H.}
 \label{fig:ipconfig2}
+\end{figure}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.75\linewidth]{ipconfig_mridul3.jpg}}
+\caption{Scanning host \texttt{ipconfig} (session 3): Ethernet 2 adapter at 192.168.56.1 (VirtualBox Host-Only); Wi-Fi adapter at 192.168.31.189 (subnet 255.255.255.0, gateway 192.168.31.1), confirming the active interfaces used for the remediation validation session.}
+\label{fig:ipconfig3}
 \end{figure}
 
 The eight evaluated environments were:
@@ -237,6 +250,12 @@ MITRE Tech. & 0 & 0 & 2 & 0 & 5 & 3 & 2 & 2 \\
 % ============================================================
 The scan of the campus Wi-Fi interface yielded zero open ports across the full 1024-port TCP sweep. All ports were reported as closed or filtered. The NES engine correctly computed a baseline score of 0, validating the zero false-positive bound of the heuristic engine.
 
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.95\linewidth]{netA_dashboard.jpg}}
+\caption{NET\_SCAN dashboard for Network A (10.68.124.5): all metrics at zero---0 Critical, 0 High Risk, 0 Services, 0 Lateral Paths, 0 Connections---with NES = 0 (Low). The scan results pane confirms 1024 ports scanned, 0 open, and connection status ``connected''. This clean baseline validates the zero false-positive bound of the heuristic engine.}
+\label{fig:netA_dashboard}
+\end{figure}
+
 % ============================================================
 \subsubsection{Network B --- VirtualBox FTP Host (10.9.7.187)}
 % ============================================================
@@ -246,6 +265,24 @@ The scan revealed one open port: \textbf{Port 21 (FTP)}. Three CVEs were identif
 \subsubsection{Network C --- VirtualBox Multi-Service (192.168.56.1)}
 % ============================================================
 Network C detected \textbf{3 active services} correlating \textbf{6 CVEs}. The heuristic engine identified 2 Critical nodes, 1 High Risk node, and 3 inter-service connections, mapping 2 MITRE techniques (T1018, T1210). NES was computed at \textbf{50 (Medium)}. What-If analysis demonstrated that simulated decommissioning of SMB (Port 445) or NetBIOS (Port 139) each reduced NES by 20 points, and removing RPC (Port 135) reduced it by a further 10 points.
+
+\begin{figure}[htbp]
+\centerline{
+  \begin{subfigure}[b]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{netC_whatif_netbios.jpg}
+    \caption{What-If tab (view 1): \#1 Port 139 (NetBIOS) eliminates 2 paths ($-$20 pts, 1 remaining); \#2 Port 445 (SMB) eliminates 2 paths ($-$20 pts, 1 remaining). Attack graph shows BBB--RPC--SMB triangle topology with NES = 50 (Medium).}
+    \label{fig:netC_whatif_netbios}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{netC_whatif_smb.jpg}
+    \caption{What-If tab (view 2): \#2 Port 445 (SMB) eliminates 2 paths ($-$20 pts, 1 remaining); \#3 Port 135 (RPC) eliminates 2 paths ($-$10 pts, 1 remaining). Confirms RPC as lowest-leverage remediation target.}
+    \label{fig:netC_whatif_smb}
+  \end{subfigure}
+}
+\caption{Network C (192.168.56.1) What-If mitigation analysis. The engine ranks ports by remediation impact: NetBIOS (Port 139) and SMB (Port 445) each yield $-$20 pts NES reduction, while RPC (Port 135) yields $-$10 pts---guiding defenders to prioritize file-sharing service decommissioning.}
+\label{fig:netC_whatif_full}
+\end{figure}
 
 % ============================================================
 \subsubsection{Network D --- Mobile Hotspot Bridge (192.168.137.1)}
@@ -679,6 +716,57 @@ Traditional scanners would report Networks G and H as similarly vulnerable based
 Future iterations of NET\_SCAN will integrate machine learning models for probabilistic attack path prediction, extend support for IPv6 topologies and cloud-native service meshes, and introduce automated remediation workflow integration via SIEM/SOAR connectors.
 
 % ============================================================
+\section{Proposed Remediation Framework}
+% ============================================================
+While NET\_SCAN excels at identifying topological vulnerabilities, lateral movement paths, and computing the Network Exposure Score, a critical operational question remains: \emph{how should defenders validate and remediate the discovered weaknesses?} Based on expert guidance, we propose a structured remediation framework centered on \textbf{Wireshark} \cite{wireshark_ref}---the industry-standard open-source network protocol analyzer---as the primary validation and diagnostic instrument.
+
+\subsection{Rationale for Wireshark Integration}
+NET\_SCAN operates at the \emph{discovery} layer: it identifies open ports, correlates CVEs, and models attack paths heuristically. However, confirming whether a flagged service is \emph{actively exploitable} in a live environment requires packet-level inspection. Wireshark provides deep packet inspection (DPI) capabilities that complement NET\_SCAN's topological analysis in three critical dimensions:
+\begin{enumerate}
+    \item \textbf{Traffic Validation:} Wireshark captures live network traffic on flagged interfaces, enabling defenders to verify whether vulnerable services (e.g., FTP on Port 21, SMB on Port 445) are actively transmitting unencrypted credentials or sensitive data.
+    \item \textbf{Lateral Movement Confirmation:} By applying display filters targeting the specific port pairs identified in NET\_SCAN's attack chains (e.g., \texttt{tcp.port==21 \&\& tcp.port==22} for an FTP$\to$SSH pivot), analysts can confirm or refute whether inter-service communication patterns match the predicted lateral movement paths.
+    \item \textbf{Protocol-Level Anomaly Detection:} Wireshark's protocol dissectors reveal malformed packets, unexpected protocol negotiations, and banner anomalies that static port scanning cannot detect \cite{sanders2017}.
+\end{enumerate}
+
+\subsection{Remediation Workflow}
+The proposed remediation workflow operates in four phases, integrating NET\_SCAN's output with Wireshark-driven validation:
+
+\subsubsection{Phase 1: Triage via NES Prioritization}
+Defenders begin by reviewing NET\_SCAN's NES scores and attack chain enumeration. Networks scoring Critical (NES $\geq$ 81) are prioritized for immediate Wireshark capture sessions. The What-If Engine's per-port NES impact scores guide which services to inspect first.
+
+\subsubsection{Phase 2: Live Traffic Capture \& Inspection}
+Wireshark is deployed on the network segment under investigation. Capture filters are configured to isolate traffic on the specific ports flagged by NET\_SCAN. For example, for Network F (NES = 100), the capture filter \texttt{port 21 or port 53 or port 80 or port 443} isolates all traffic on the four highest-leverage ports. Analysts inspect:
+\begin{itemize}
+    \item \textbf{Unencrypted credential transmission} on FTP (Port 21) and HTTP (Port 80) using Wireshark's ``Follow TCP Stream'' feature.
+    \item \textbf{DNS query patterns} on Port 53 to detect potential exfiltration channels (aligned with MITRE T1048).
+    \item \textbf{SMB/NetBIOS handshakes} on Ports 139/445 to identify unauthorized file-sharing sessions or lateral movement attempts (aligned with MITRE T1210).
+    \item \textbf{TLS certificate validity} on HTTPS (Port 443) and DNS-over-TLS (Port 853) to verify encryption integrity.
+\end{itemize}
+
+\subsubsection{Phase 3: Targeted Port Hardening}
+Based on the combined evidence from NET\_SCAN's What-If analysis and Wireshark's packet-level findings, defenders execute targeted remediation actions:
+\begin{itemize}
+    \item \textbf{Service Decommissioning:} Disable unnecessary services confirmed as exploitable by Wireshark captures. For Network F, removing FTP (Port 21) eliminates the CVE-1999-0080 (CVSS 10.0) attack surface.
+    \item \textbf{Protocol Upgrade:} Replace unencrypted protocols (FTP $\to$ SFTP, HTTP $\to$ HTTPS, DNS $\to$ DNS-over-TLS) where Wireshark confirms plaintext data transmission.
+    \item \textbf{Firewall Rule Insertion:} Deploy stateful firewall rules blocking the specific inter-port communication patterns that NET\_SCAN's BFS/Dijkstra engine identified as lateral movement paths.
+    \item \textbf{Network Segmentation:} Isolate high-risk service clusters (e.g., SMB/NetBIOS/RPC triangle in Network G) into dedicated VLANs with strict inter-VLAN ACLs.
+\end{itemize}
+
+\subsubsection{Phase 4: Post-Remediation Verification}
+After remediation, the defender executes a second NET\_SCAN pass on the hardened network. The updated NES score is compared against the pre-remediation baseline to quantify improvement. Simultaneously, a Wireshark capture session verifies that the blocked ports no longer carry traffic and that protocol upgrades are functioning correctly. This closed-loop validation ensures that remediation actions have the intended effect and no residual attack surfaces remain.
+
+\subsection{Illustrative Example: Network G Remediation}
+Consider Network G (172.20.10.3, NES = 50, Medium), which exposed Ports 135 (RPC), 139 (NetBIOS), and 445 (SMB). The remediation workflow proceeds as follows:
+\begin{enumerate}
+    \item NET\_SCAN identifies 6 CVEs, 2 MITRE techniques (T1136, T1210), and a triangle attack topology.
+    \item Wireshark capture on the local subnet confirms active SMB session negotiation on Port 445 and NetBIOS name resolution traffic on Port 139.
+    \item The defender disables NetBIOS over TCP/IP in Windows network adapter settings and restricts SMB access via Windows Firewall to authorized hosts only.
+    \item A re-scan with NET\_SCAN confirms NES reduction from 50 to $\leq$20 (Low), and Wireshark verifies zero traffic on Ports 139 and 445 from unauthorized sources.
+\end{enumerate}
+
+This framework transforms NET\_SCAN from a \emph{detection-only} tool into a component of a complete \emph{detect--validate--remediate--verify} security operations cycle, with Wireshark serving as the packet-level ground truth at each stage.
+
+% ============================================================
 \section{Conclusion}
 % ============================================================
 This paper presented the architectural design and empirical validation of NET\_SCAN across \textbf{eight} heterogeneous network environments ranging from isolated campus interfaces to live internet-facing hosts. By bridging multi-threaded port sweeping with NVD-enriched CVE correlation, MITRE ATT\&CK technique mapping, dual-algorithm (BFS + Dijkstra) lateral movement pathfinding, What-If mitigation analysis, and real-time force-directed frontend visualization, the platform provides a scalable, browser-native solution to adversarial network topology analysis.
@@ -694,6 +782,8 @@ Testing confirmed that NET\_SCAN correctly produces zero false positives on hard
 \bibitem{mitre_ref} MITRE Corporation, ``ATT\&CK Framework,'' [Online]. Available: https://attack.mitre.org/.
 \bibitem{dijkstra} E. W. Dijkstra, ``A note on two problems in connexion with graphs,'' \emph{Numerische Mathematik}, vol. 1, no. 1, pp. 269--271, 1959.
 \bibitem{bfs_ref} T. H. Cormen et al., \emph{Introduction to Algorithms}, 3rd ed. MIT Press, 2009.
+\bibitem{wireshark_ref} G. Combs et al., ``Wireshark --- Network Protocol Analyzer,'' [Online]. Available: https://www.wireshark.org/.
+\bibitem{sanders2017} C. Sanders, ``Practical Packet Analysis: Using Wireshark to Solve Real-World Network Problems,'' 3rd ed. No Starch Press, 2017.
 \end{thebibliography}
 
 \end{document}
