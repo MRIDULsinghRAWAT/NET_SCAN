@@ -3,23 +3,29 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?logo=react)
 ![Flask](https://img.shields.io/badge/Flask-Backend-000000.svg?logo=flask)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python)
 
-**NET_SCAN** is a real-time network intelligence platform that systematically advances beyond traditional node-centric port scanning (like Nmap or Nessus) by automatically graphing distributed attack paths. It identifies how adversaries can chain vulnerabilities together across enterprise infrastructures utilizing **Cyber Kill Chain Modeling** and **MITRE ATT&CK Mapping**.
+**NET_SCAN** is a real-time network intelligence platform that goes beyond traditional port scanning tools like Nmap or Nessus. It automatically graphs distributed attack paths, showing how adversaries can chain vulnerabilities together across network infrastructures using **Cyber Kill Chain Modeling** and **MITRE ATT&CK Mapping**.
 
 ---
 
 ## Core Novelty
-Network security evaluations often produce massive text outputs consisting of isolated vulnerabilities. NET_SCAN translates this data into interactive, force-directed graphs. It autonomously assigns services into kill-chain objectives (**Entry**, **Pivot**, and **Target** nodes), calculates viable lateral movement transversal paths, and generates a mathematically justified **Network Exposure Score (NES)** to measure overall topological risk.
+
+Network security scans usually produce long text reports listing isolated vulnerabilities. NET_SCAN turns that data into interactive, force-directed attack graphs. It automatically classifies services into kill-chain roles (**Entry**, **Pivot**, and **Target** nodes), traces lateral movement paths using BFS and Dijkstra algorithms, and computes a mathematically justified **Network Exposure Score (NES)** on a 0–100 scale.
 
 ## Key Features
-- **Heuristic Kill Chain Classification:** Autonomously classes discovered network services based on typical adversarial exploitation behavior.
-- **Automated Lateral Movement Maps:** Traces attack linkages such as `Entry → Pivot` or `Pivot → Target` utilizing standardized MITRE TTPs (e.g., T1021.004).
-- **Network Exposure Score (NES):** Empirically measures architectural risk using independent weights matching CVSS v3.1 critical and high matrices, combined with lateral network compounding logic. Displayed via a dedicated donut gauge with severity classification (LOW / MED / HIGH / CRIT).
-- **Real-Time Canvas Visualization:** Renders interactive, physics-based attack graphs streamed live via Server-Sent Events (SSE) directly to the browser with a glassmorphism-themed UI.
-- **Attack Simulation Controls:** Step-through attack path replay with Start, Pause, Resume, Reset, and Step-Forward controls for detailed kill chain walkthrough.
-- **NVD CVE Enrichment:** Real-time linkage of discovered banner heuristics against the National Vulnerability Database API to enrich nodes with historically verified CVEs.
-- **"What-If" Analysis Engine:** Pre-calculate mitigation efficiency by temporarily scrubbing specific nodes from the attack scenario dynamically.
-- **Scoring Criteria Panel:** Transparent breakdown of exposure score factors including CVE severity, lateral path count, blast radius coverage, and network topology depth.
+
+- **Heuristic Kill Chain Classification:** Automatically sorts discovered services into Entry, Pivot, and Target roles based on how attackers typically exploit them.
+- **Automated Lateral Movement Maps:** Traces attack linkages such as `Entry → Pivot → Target` using MITRE ATT&CK techniques (T1048, T1210, T1572, T1021, T1505).
+- **Dual-Algorithm Critical Paths Engine:** Runs both **BFS (Shortest Path)** and **Dijkstra (Deadliest Path)** simultaneously, revealing both the quickest and most dangerous routes to target nodes.
+- **Network Exposure Score (NES):** Scores network risk from 0 to 100 using CVSS v3.1 severity weights combined with lateral path compounding logic. Four risk tiers: Low (0–30), Medium (31–59), High (60–80), Critical (81+).
+- **Real-Time Canvas Visualization:** Interactive, physics-based attack graphs streamed live via Server-Sent Events (SSE) with a glassmorphism-themed UI.
+- **Attack Simulation Controls:** Step-through attack path replay with Start, Pause, Resume, Reset, and Step-Forward controls.
+- **NVD CVE Enrichment:** Real-time lookup of discovered service banners against the National Vulnerability Database API.
+- **"What-If" Mitigation Engine:** Simulate removing a vulnerable service and instantly see the NES impact — letting you prioritize which fixes matter most.
+- **Scoring Criteria Panel:** Transparent breakdown of exposure factors including CVE severity, lateral path count, blast radius coverage, and network topology depth.
+
+---
 
 ## Project Structure
 
@@ -33,25 +39,25 @@ NET_SCAN/
 │   │   │   ├── graph_gen.py # Force-directed simulation logic
 │   │   │   └── cve_lookup.py# NVD integration wrapper
 │   │   ├── reporting/       # Professional PDF Export Engine
-│   │   └── scanner/         # Multi-threaded TCP Port Enumerable Engine
+│   │   └── scanner/         # Multi-threaded TCP Port Enumeration Engine
 │   │       ├── engine.py    # Multi-threaded worker queues
 │   │       └── banner.py    # Service heuristic inferences
 ├── frontend/
 │   ├── src/
-│   │   ├── components/      # React UI 
-│   │   │   ├── Graphview.js        # HTML5 Canvas Graph 
+│   │   ├── components/      # React UI
+│   │   │   ├── Graphview.js        # HTML5 Canvas Graph
 │   │   │   └── ScannerDashboard.js # Primary Interaction Context
 │   │   └── services/        # Subroutines & API configs
 │   └── package.json         # Node Dependency manifest
-└── README.md                # Project documentation
+├── validation/              # Headless validation pipeline
+└── README.md
 ```
 
 ## Installation & Setup
 
-NET_SCAN utilizes a decoupled architecture communicating via REST APIs and Server-Sent Events. You will need to spin up the Python backend and the Node/React frontend simultaneously.
+NET_SCAN uses a decoupled architecture with a Python backend and a React frontend communicating via REST APIs and Server-Sent Events.
 
 ### 1. Backend (Scanner & Intelligence Pipeline)
-Open a terminal in the project root:
 ```bash
 cd backend
 python -m venv venv
@@ -65,7 +71,6 @@ pip install -r requirements.txt
 ```
 
 ### 2. Frontend (Dashboard UI)
-Open a second, separate terminal in the project root:
 ```bash
 cd frontend
 npm install
@@ -73,40 +78,37 @@ npm install
 
 ## Usage
 
-To launch the integrated platform:
-
-1. **Start the Flask AP:**
+1. **Start the Flask API:**
    ```bash
    cd backend
-   python run.py  # OR python app/main.py (Depending on your root level)
+   python run.py  # OR python app/main.py
    ```
-   *The backend will boot up at `http://127.0.0.1:5000`.*
+   *Backend runs at `http://127.0.0.1:5000`.*
 
 2. **Start the React Visualizer:**
    ```bash
    cd frontend
    npm start
    ```
-   *The interactive dashboard will spawn at `http://localhost:3000`.*
+   *Dashboard opens at `http://localhost:3000`.*
 
-3. Enter your **Target IP Address**, define thread scopes, and click **LAUNCH SYSTEM SCAN**. Watch the intelligence pipeline reconstruct the kill chain topology natively in the UI.
+3. Enter your **Target IP Address**, configure scan settings, and click **LAUNCH SYSTEM SCAN**. The attack graph builds in real-time as the scan progresses.
 
 ---
 
 ## Validation Pipeline
 
-NET_SCAN includes a headless validation script designed to execute the network scanning engine and analytical backends against predefined target lists, outputting the analytical results in consolidated logs without needing the UI.
+NET_SCAN includes a headless validation script to run the scanning engine against predefined targets without the UI:
 
-To run the pipeline:
+```bash
+cd backend
+python ../validation/scripts/run_full_pipeline.py
+```
 
-1. Open a terminal and navigate into the `backend` directory.
-2. Execute the pipeline script:
-   ```bash
-   python ../validation/scripts/run_full_pipeline.py
-   ```
-   *(Ensure your Python virtual environment is activated if applicable).*
-
-Your analytical outputs, raw scans, and execution logs will be saved in an incremental folder at `validation/results/run_X/netscan/`.
+Results are saved to `validation/results/run_X/netscan/`.
 
 ---
-*For more extensive academic details regarding algorithmic mathematical bounds, latency benchmarks, or MITRE scoring logic, please refer to the attached primary IEEE research document.*
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

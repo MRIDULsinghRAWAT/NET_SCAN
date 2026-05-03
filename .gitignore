@@ -20,3 +20,7 @@ backend/app/scanner/data/scan_output_*.json
 nul
 tmpclaude-*
 *.tmp
+
+# Research paper (unpublished - do not commit until published)
+NET_SCAN_Paper.tex
+figures/
