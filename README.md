@@ -4,6 +4,7 @@
 ![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?logo=react)
 ![Flask](https://img.shields.io/badge/Flask-Backend-000000.svg?logo=flask)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python)
+![Google Auth](https://img.shields.io/badge/Google_OAuth-Sign_In-4285F4.svg?logo=google)
 
 **NET_SCAN** is a real-time network intelligence platform that goes beyond traditional port scanning tools like Nmap or Nessus. It automatically graphs distributed attack paths, showing how adversaries can chain vulnerabilities together across network infrastructures using **Cyber Kill Chain Modeling** and **MITRE ATT&CK Mapping**.
 
@@ -24,6 +25,8 @@ Network security scans usually produce long text reports listing isolated vulner
 - **NVD CVE Enrichment:** Real-time lookup of discovered service banners against the National Vulnerability Database API.
 - **"What-If" Mitigation Engine:** Simulate removing a vulnerable service and instantly see the NES impact — letting you prioritize which fixes matter most.
 - **Scoring Criteria Panel:** Transparent breakdown of exposure factors including CVE severity, lateral path count, blast radius coverage, and network topology depth.
+- **Google OAuth Sign-In:** One-click Google account authentication via Google Identity Services. User session persists across page reloads.
+- **Contact Page:** Dedicated team contact page with GitHub and email links for project maintainers.
 
 ---
 
@@ -43,10 +46,16 @@ NET_SCAN/
 │   │       ├── engine.py    # Multi-threaded worker queues
 │   │       └── banner.py    # Service heuristic inferences
 ├── frontend/
+│   ├── public/
+│   │   └── index.html       # HTML shell (loads Google GIS script)
 │   ├── src/
 │   │   ├── components/      # React UI
 │   │   │   ├── Graphview.js        # HTML5 Canvas Graph
-│   │   │   └── ScannerDashboard.js # Primary Interaction Context
+│   │   │   ├── ScannerDashboard.js # Primary Interaction Context
+│   │   │   ├── LoginModal.js       # Google Sign-In Modal
+│   │   │   └── Contact.js          # Team Contact Page
+│   │   ├── context/
+│   │   │   └── AuthContext.js      # Google OAuth State Provider
 │   │   └── services/        # Subroutines & API configs
 │   └── package.json         # Node Dependency manifest
 ├── validation/              # Headless validation pipeline
@@ -75,6 +84,18 @@ pip install -r requirements.txt
 cd frontend
 npm install
 ```
+
+### 3. Google OAuth Setup
+
+To enable Google Sign-In:
+
+1. Go to the [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials).
+2. Create a new **OAuth 2.0 Client ID** (Application type: *Web application*).
+3. Add `http://localhost:3000` to **Authorized JavaScript origins**.
+4. Copy the Client ID and paste it in `frontend/src/context/AuthContext.js`:
+   ```js
+   const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+   ```
 
 ## Usage
 
@@ -106,6 +127,15 @@ python ../validation/scripts/run_full_pipeline.py
 ```
 
 Results are saved to `validation/results/run_X/netscan/`.
+
+---
+
+## Contact
+
+| Maintainer | GitHub | Email |
+|------------|--------|-------|
+| Mridul Singh Rawat | [@MRIDULsinghRAWAT](https://github.com/MRIDULsinghRAWAT) | mridulsinghrawat31@gmail.com |
+| Akshat Joshi | [@Akshat-Joshi0](https://github.com/Akshat-Joshi0) | — |
 
 ---
 
