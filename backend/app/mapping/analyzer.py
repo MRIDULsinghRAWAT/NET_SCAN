@@ -382,7 +382,7 @@ def calculate_attack_chains(analyzed_data):
                     pivot_base = _base_service(str(pivot["port"]))
                     target_base = _base_service(str(target["port"]))
                     full_paths.append({
-                        "name": f"{entry_base} → {pivot_base} → {target_base}",
+                        "name": f"{entry_base} -> {pivot_base} -> {target_base}",
                         "hops": [
                             f"Port {entry['port']} ({entry['service']})",
                             f"Port {pivot['port']} ({pivot['service']})",

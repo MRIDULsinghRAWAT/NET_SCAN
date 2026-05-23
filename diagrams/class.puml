@@ -1,0 +1,80 @@
+@startuml Class_Diagram
+title NET_SCAN — Class Diagram
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+  HeaderBackgroundColor #1565C0
+  FontColor #000000
+}
+
+class ScanEngine {
+  - target_ip : str
+  - port_range : tuple
+  - timeout_ms : int
+  - threads : int
+  - port_queue : Queue
+  + start_scan() : void
+  + scan_port(port: int) : PortResult
+  + grab_banner(sock: socket) : str
+}
+
+class RiskAnalyzer {
+  - cve_cache : dict
+  + classify_service(port, banner) : ServiceRole
+  + fetch_cves(service: str) : list<CVE>
+  + map_mitre_technique(service) : list<Technique>
+  + calculate_risk_level() : RiskLevel
+}
+
+class GraphGenerator {
+  - nodes : list<Node>
+  - edges : list<Edge>
+  + build_kill_chain() : Graph
+  + add_entry_node(port, service) : void
+  + add_pivot_node(port, service) : void
+  + add_target_node(port, service) : void
+  + generate_edges() : list<Edge>
+}
+
+class CriticalPathsEngine {
+  - graph : Graph
+  + run_bfs(source, target) : Path
+  + run_dijkstra(source, target) : Path
+  + get_shortest_paths() : list<Path>
+  + get_deadliest_paths() : list<Path>
+}
+
+class NESCalculator {
+  - alpha : float
+  + compute_score(graph) : float
+  + get_tier(score) : str
+}
+
+class WhatIfEngine {
+  - original_graph : Graph
+  + simulate_removal(port) : WhatIfResult
+  + compute_nes_delta() : float
+  + rank_remediation_targets() : list
+}
+
+class SSEStreamer {
+  - event_queues : dict
+  + push_event(target_ip, event) : void
+  + stream(target_ip) : Generator
+}
+
+class FlaskAPI {
+  + start_scan(request) : Response
+  + scan_stream(target_ip) : SSEResponse
+  + get_results(target_ip) : JSON
+}
+
+ScanEngine --> RiskAnalyzer : "feeds port data"
+RiskAnalyzer --> GraphGenerator : "feeds classified services"
+GraphGenerator --> CriticalPathsEngine : "provides graph"
+GraphGenerator --> NESCalculator : "provides graph"
+GraphGenerator --> WhatIfEngine : "provides graph"
+FlaskAPI --> ScanEngine : "triggers scan"
+FlaskAPI --> SSEStreamer : "streams events"
+@enduml

@@ -12,7 +12,7 @@ function Contact() {
       name: 'Akshat Joshi',
       github: 'https://github.com/Akshat-Joshi0',
       githubHandle: '@Akshat-Joshi0',
-      email: null,
+      email: 'akshatjoshi7218@gmail.com',
     },
   ];
 

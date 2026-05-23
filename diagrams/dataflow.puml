@@ -1,0 +1,47 @@
+@startuml DataFlow_Diagram
+title NET_SCAN — Data Flow Diagram (Level 1)
+skinparam rectangle {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+  RoundCorner 15
+}
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
+}
+
+actor "User" as user
+
+rectangle "1.0\nTCP Port Scanner" as scanner
+rectangle "2.0\nNVD API v2.0\nCVE Lookup" as nvd
+rectangle "3.0\nMITRE ATT&CK\nMapper" as mitre
+rectangle "4.0\nKill Chain\nClassifier" as killchain
+rectangle "5.0\nAttack Graph\nGenerator" as graphgen
+rectangle "6.0\nBFS / Dijkstra\nCritical Paths" as paths
+rectangle "7.0\nNES Calculator" as nes
+rectangle "8.0\nWhat-If Engine" as whatif
+rectangle "9.0\nSSE Streamer" as sse
+rectangle "10.0\nReact Frontend\n(Live Dashboard)" as frontend
+
+database "NVD API v2.0\n(External)" as nvddb
+database "scan_output.json" as storage
+
+user --> scanner : "Target IP,\nPort Range"
+scanner --> nvd : "Open Ports +\nBanners"
+scanner --> mitre : "Service Info"
+scanner --> killchain : "Port/Service Data"
+nvd --> nvddb : "CVE Query"
+nvddb --> nvd : "CVE IDs +\nCVSS Scores"
+nvd --> graphgen : "CVE Data"
+mitre --> graphgen : "Technique IDs\n(T1048, T1210...)"
+killchain --> graphgen : "Node Roles\n(Entry/Pivot/Target)"
+graphgen --> paths : "Graph Structure"
+graphgen --> nes : "Graph + CVEs"
+graphgen --> whatif : "Graph Snapshot"
+paths --> sse : "Critical Paths"
+nes --> sse : "NES Score"
+whatif --> sse : "What-If Results"
+sse --> frontend : "SSE Events"
+frontend --> user : "Visual Graph +\nDashboard"
+graphgen --> storage : "JSON Output"
+@enduml

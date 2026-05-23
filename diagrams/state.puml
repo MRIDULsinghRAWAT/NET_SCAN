@@ -1,0 +1,45 @@
+@startuml State_Diagram
+title NET_SCAN — State Machine Diagram
+skinparam state {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+  FontColor #000000
+}
+
+[*] --> Idle
+
+state "Idle" as Idle : Waiting for user input
+state "Scanning" as Scanning : Threads spawned
+state "Port Discovery" as PD : TCP connect_ex() on each port
+state "Banner Grabbing" as BG : recv() probe on OPEN ports
+state "CVE Enrichment" as CVE : Querying NVD API v2.0
+state "MITRE Mapping" as MITRE : Mapping techniques\n(T1048, T1210, T1572...)
+state "Kill Chain\nClassification" as KC : Assigning Entry/Pivot/Target
+state "Graph Generation" as GG : Building nodes & edges
+state "Path Analysis" as PA : Running BFS + Dijkstra
+state "NES Computation" as NES : Computing score (0-100)
+state "Results Ready" as RR : Dashboard rendered
+state "What-If Mode" as WI : Simulating port removal
+state "Error" as Err : Connection failed
+
+Idle --> Scanning : User clicks\n"Start Scan"
+Scanning --> PD : Worker threads\ninitialized
+PD --> PD : Port CLOSED\nor FILTERED
+PD --> BG : Port OPEN\ndetected
+BG --> CVE : All ports\nscanned
+CVE --> MITRE : CVEs fetched\nfrom NVD
+MITRE --> KC : Techniques\nmapped
+KC --> GG : Roles\nassigned
+GG --> PA : Graph\nbuilt
+PA --> NES : BFS + Dijkstra\ncomplete
+NES --> RR : Score\ncomputed
+
+RR --> WI : User simulates\nport removal
+WI --> RR : NES\nrecalculated
+RR --> Idle : User starts\nnew scan
+RR --> [*]
+
+Scanning --> Err : Connection\nfailed / timeout
+Err --> Idle : Reset
+
+@enduml

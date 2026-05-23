@@ -1,0 +1,56 @@
+@startuml Activity_Diagram
+title NET_SCAN — Activity Diagram
+skinparam activity {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+  DiamondBackgroundColor #BBDEFB
+  DiamondBorderColor #1565C0
+}
+
+start
+
+:User enters Target IP\nand scan parameters;
+
+:System spawns\nscanner threads;
+
+while (More ports to scan?) is (Yes)
+  :TCP connect_ex() on port;
+  if (Port OPEN?) then (Yes)
+    :Grab service banner\nvia recv() probe;
+    :Stream result via SSE\n(port_discovered event);
+  else (No)
+    :Log as CLOSED\nor FILTERED;
+  endif
+endwhile (No)
+
+:Query NVD API v2.0\nfor CVEs on each service;
+
+:Map discovered services\nto MITRE ATT&CK techniques\n(T1048, T1210, T1505.003...);
+
+:Classify into Kill Chain roles\n(Entry / Pivot / Target);
+
+:Build attack graph\n(nodes + edges);
+
+fork
+  :Run BFS —\nfind SHORTEST paths;
+fork again
+  :Run Dijkstra —\nfind DEADLIEST paths;
+end fork
+
+:Calculate Network\nExposure Score (NES)\nusing formula:\nS = Sigma(w_cve x D) x alpha^P;
+
+:Compute What-If\nscenarios for each port;
+
+:Stream final results\nvia SSE to frontend;
+
+:Render interactive\nforce-directed graph\nin browser;
+
+while (User runs What-If?) is (Yes)
+  :Simulate port\ndecommission;
+  :Recalculate NES\nand attack chains;
+  :Display NES delta\nreduction;
+endwhile (No)
+
+stop
+
+@enduml

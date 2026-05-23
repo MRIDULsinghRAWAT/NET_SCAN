@@ -25,7 +25,6 @@ Network security scans usually produce long text reports listing isolated vulner
 - **NVD CVE Enrichment:** Real-time lookup of discovered service banners against the National Vulnerability Database API.
 - **"What-If" Mitigation Engine:** Simulate removing a vulnerable service and instantly see the NES impact — letting you prioritize which fixes matter most.
 - **Scoring Criteria Panel:** Transparent breakdown of exposure factors including CVE severity, lateral path count, blast radius coverage, and network topology depth.
-- **Google OAuth Sign-In:** One-click Google account authentication via Google Identity Services. User session persists across page reloads.
 - **Contact Page:** Dedicated team contact page with GitHub and email links for project maintainers.
 
 ---
@@ -52,10 +51,10 @@ NET_SCAN/
 │   │   ├── components/      # React UI
 │   │   │   ├── Graphview.js        # HTML5 Canvas Graph
 │   │   │   ├── ScannerDashboard.js # Primary Interaction Context
-│   │   │   ├── LoginModal.js       # Google Sign-In Modal
-│   │   │   └── Contact.js          # Team Contact Page
-│   │   ├── context/
-│   │   │   └── AuthContext.js      # Google OAuth State Provider
+│   │   │   ├── Hero.js             # Landing Page
+│   │   │   ├── About.js            # Project Information
+│   │   │   ├── Contact.js          # Team Contact Page
+│   │   │   └── GraphBackground.js  # Dynamic IP Graph Background
 │   │   └── services/        # Subroutines & API configs
 │   └── package.json         # Node Dependency manifest
 ├── validation/              # Headless validation pipeline
@@ -85,17 +84,7 @@ cd frontend
 npm install
 ```
 
-### 3. Google OAuth Setup
 
-To enable Google Sign-In:
-
-1. Go to the [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials).
-2. Create a new **OAuth 2.0 Client ID** (Application type: *Web application*).
-3. Add `http://localhost:3000` to **Authorized JavaScript origins**.
-4. Copy the Client ID and paste it in `frontend/src/context/AuthContext.js`:
-   ```js
-   const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
-   ```
 
 ## Usage
 
@@ -135,7 +124,7 @@ Results are saved to `validation/results/run_X/netscan/`.
 | Maintainer | GitHub | Email |
 |------------|--------|-------|
 | Mridul Singh Rawat | [@MRIDULsinghRAWAT](https://github.com/MRIDULsinghRAWAT) | mridulsinghrawat31@gmail.com |
-| Akshat Joshi | [@Akshat-Joshi0](https://github.com/Akshat-Joshi0) | — |
+| Akshat Joshi | [@Akshat-Joshi0](https://github.com/Akshat-Joshi0) | akshatjoshi7218@gmail.com |
 
 ---
 

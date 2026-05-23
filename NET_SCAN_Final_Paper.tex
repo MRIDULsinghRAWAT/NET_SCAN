@@ -1,4 +1,4 @@
-% ============================================================
+﻿% ============================================================
 % IMAGE RENAME GUIDE (rename your screenshots as below and
 % place them in the same folder as this .tex file):
 %
@@ -102,14 +102,14 @@ Cyber Kill Chain, Lateral Movement, Attack Graphs, Network Security, MITRE ATT\&
 % ============================================================
 \section{Introduction}
 % ============================================================
-As computer networks grow bigger and more connected, securing them becomes much harder. The tools that we use every day like Nmap and Nessus are very good at finding weaknesses in single machines. But they don't clearly show how an attacker can connect these weaknesses together \cite{nmap_ref}, \cite{nessus_ref}. Now, just finding one weak machine is not enough. We need to understand the exact paths an attacker can take to move deeper into the network which is called lateral movement. Finding these attack paths manually takes a lot of time and usually needs expert red team skills. To solve this problem, we created NET SCAN. It is an automated tool that simulates and maps attacks. It takes basic port scan data looks for vulnerabilities using the National Vulnerability Database (NVD) \cite{nvd_ref} and uses our custom algorithms to draw possible kill chains on an interactive graph. By converting simple text data into a visual graph, it becomes much easier to understand how far an attack can spread and which systems should be fixed first, using our Network Exposure Score (NES).
+As the networks keep growing bigger and more connected securing them becomes difficult . The tools that we use every day like Nmap and Nessus are very good at finding weaknesses in single machines. But they don't clearly show how an attacker can connect these weaknesses together \cite{nmap_ref}, \cite{nessus_ref}. Now, just finding one weak machine is not enough. We need to understand the exact paths an attacker can take to move deeper into the network which is called lateral movement. Finding these attack paths manually takes a large amount of time and usually needs expert red team skills. To solve this problem, we created NET SCAN. It is an automated tool that simulates and maps attacks. It takes basic port scan data looks for vulnerabilities using the National Vulnerability Database (NVD) \cite{nvd_ref} and uses our custom algorithms to draw possible kill chains on an interactive graph. By converting simple text data into a visual graph, it becomes much easier to understand how far an attack can spread and which systems should be fixed first, using our Network Exposure Score (NES).
 
 The main things that we achieved in this work are:
 \begin{itemize}
     \item We built a fully automated pipeline that connects TCP port scanning, CVE lookups, and kill-chain mapping all into one browser interface.
     \item We created a critical path engine that runs on both BFS and Dijkstra algorithms to find and rank lateral movement paths based on risk.
     \item We developed a method to automatically predict pivot paths by mapping MITRE ATT\&CK techniques to the discovered services.
-    \item We designed the Network Exposure Score (NES), a math-based formula that gives a network risk score from 0 to 100.
+    \item We designed the Network Exposure Score (NES) it is a math-based formula that gives a network risk score from 0 to 100.
     \item We tested the tool on eight different networks, including local setups and real internet hosts like a public DNS resolver, to prove it works.
     \item We added a ``What-If'' feature that will allow you to simulate how to fix a vulnerability and instantly see how much it improves the NES score.
 \end{itemize}
@@ -117,9 +117,9 @@ The main things that we achieved in this work are:
 % ============================================================
 \section{Related Work}
 % ============================================================
-A lot of research has already been done on attack graphs \cite{ammann2002}. For example, BloodHound \cite{bloodhound} changed the way we secure Active Directory (AD) by using graphs to find hidden paths attackers use to gain higher privileges. However, the limitation of BloodHound is that it mainly focuses only on AD environments.
+A lot of research has already been done on attack graphs \cite{ammann2002}. For example: BloodHound \cite{bloodhound} changed the way we secure Active Directory (AD) by using graphs to find out hidden paths attackers use to gain higher privileges. However, the limitation of BloodHound is that it only focuses on AD environments.
 
-With NET SCAN, our aim was to bring the same visual approach to normal TCP/IP networks. Instead of giving just a static report, NET SCAN calculates the current strength of the network and shows the graph live in the browser. What makes NET SCAN different is its Critical Paths engine. We chose to run both BFS and Dijkstra algorithms together. This helps us see both the shortest path an attacker can take and the most dangerous one at the same time.
+With NET SCAN, our aim was to bring the same visual approach to normal TCP/IP networks. Instead of giving just a static report, NET SCAN calculates the current strength of the network and shows the graph live in the browser. What makes NET SCAN different is its Critical Paths engine. We run both BFS and Dijkstra algorithms together this helps us see both the shortest path an attacker can take and the most dangerous one at the same time.
 
 % ============================================================
 \section{System Architecture}
@@ -130,17 +130,17 @@ We split the tool into two main parts: a Python backend that handles the heavy l
 When NET\_SCAN finds an open service, it automatically tries to figure out what role it plays in an attack. We break them down into three categories:
 \begin{itemize}
     \item \textbf{Entry Nodes:} Things like web servers (ports 80, 443) or FTP that are exposed to the outside and give an attacker their first foothold.
-    \item \textbf{Pivot Nodes:} Services like SSH or RDP that an attacker could use to hop into deeper, more restricted parts of the network.
+    \item \textbf{Pivot Nodes:} The services like SSH or RDP that an attacker could use to hop into deeper and more restricted parts of the network.
     \item \textbf{Target Nodes:} The final goal of the attack, like a DNS server or a Domain Controller holding sensitive data.
 \end{itemize}
 
 \subsection{Automated Lateral Movement Modeling}
-NET\_SCAN guesses how these nodes connect (like going from $Entry \rightarrow Pivot \rightarrow Target$) by looking at MITRE techniques. For example, it checks for techniques like Exfiltration Over Alt Protocol (T1048) or Exploiting Remote Services (T1210). To decide if a path is actually usable by a hacker, it checks the live CVE data it pulls from the NVD.
+NET\_SCAN guesses how these nodes connect (like going from $Entry \rightarrow Pivot \rightarrow Target$) by looking at MITRE techniques. For example: it checks for techniques like Exfiltration Over Alt Protocol (T1048) or Exploiting Remote Services (T1210). To decide if a path is usable by a hacker it checks the live CVE data that it pulls from the NVD.
 
 \subsection{Critical Paths Engine}
-Our Critical Paths Engine is unique because it runs two graph algorithms at the same time:
+Our Critical Paths Engine is unique because it can run two graph algorithms at the same time:
 \begin{itemize}
-    \item \textbf{BFS (Shortest Path):} This finds the quickest way to a target node, counting the fewest number of jumps.
+    \item \textbf{BFS (Shortest Path):} This find out the quickest way to a target node counting the fewest number of jumps.
     \item \textbf{Dijkstra (Deadliest Path):} This looks at the CVSS severity scores of the vulnerabilities. It finds the path that has the most critical flaws, which we label as \textsc{deadliest} in the app.
 \end{itemize}
 Every path gets a hop count and a Risk score so you know exactly which paths are the most dangerous.
@@ -151,15 +151,15 @@ Here is the math behind the NES ($S_{exp}$):
 \begin{equation}
 S_{exp} = \sum_{i=1}^{N} (w_{cve}^{(i)} \times D_{node}^{(i)}) \times \alpha^{P}
 \end{equation}
-In this formula, $w_{cve}^{(i)}$ is how severe the vulnerability is, $D$ is the depth, $P$ is the number of lateral paths, and $\alpha$ is a multiplier for the blast radius. We scale the final result from 0 to 100 and group it into four tiers: Low (0--30), Medium (31--59), High (60--80), and Critical (81+).
+In this formula, $w_{cve}^{(i)}$ is how severe the vulnerability is, $D$ is the depth, $P$ is the number of lateral paths, and $\alpha$ is a multiplier for the blast radius. We scale the result from 0 to 100 and group it into four tiers: Low (0--30), Medium (31--59), High (60--80) and Critical (81+).
 
 \subsection{What-If Mitigation Engine}
-We built a ``What-If'' feature so you can play around with the graph. You can click on a vulnerable service and simulate taking it offline. When you do this, NET\_SCAN recalculates the NES and the attack chains instantly. This lets you see exactly how much safer your network would be if you patched a specific bug. We tested this heavily on Networks C and F and found it perfectly tracked how much the risk dropped when we disabled certain ports.
+We built a ``What-If'' feature so that you can play around with the graph. You can click on a vulnerable service and simulate taking it offline. When you do this, NET SCAN recalculates the NES and the attack chains instantly. This let you see exactly how safer your network would be if you patched a specific bug. We tested this heavily on Networks C and F and found it perfectly tracked how much the risk dropped when we disabled certain ports.
 
 % ============================================================
 \section{Experimental Validation}
 % ============================================================
-To prove that our mapping engine, CVE lookups, and exposure scoring actually work in the real world, we tested NET\_SCAN on eight different networks. We chose environments that varied wildly in how they were set up and what services they ran.
+To prove that our mapping engine, CVE lookups, and exposure scoring actually work in the real world, we tested NET SCAN on eight different networks. We chose the environments that varied wildly how they were set up and what services they ran.
 
 \subsection{Testing Environment}
 We ran our tests against eight network segments that we could reach from our scanning laptop. Each one represented a totally different type of network. You can see our exact network adapter setups during these test sessions in Figs.~\ref{fig:ipconfig}, \ref{fig:ipconfig2}, and \ref{fig:ipconfig3}.
@@ -405,7 +405,7 @@ The Critical Paths Engine identified three \textsc{Deadliest} paths (all 2-hop, 
 % ============================================================
 \subsubsection{Network F --- Public Internet Host 2 (185.222.222.222)}
 % ============================================================
-Network F produced the highest-complexity scan across all environments, with NES reaching the platform ceiling of \textbf{100 (Critical)}. The scan identified \textbf{7 services}, \textbf{9 inter-node connections}, \textbf{7 lateral paths}, 2 Critical nodes, and 5 High Risk nodes.
+Network F produced the highest-complexity scan across all environments, with NES reaching the platform ceiling of \textbf{100 (Critical)}. The results showed 7 services running, 9 connections between different systems, and 7 possible paths for lateral movement as well. Out of these, 2 of the nodes were flagged as critical and 5 as high risk.
 
 \begin{figure}[htbp]
 \centerline{
@@ -496,7 +496,7 @@ MITRE Techniques Mapped & 3 (T1048, T1210, T1572) \\
 % ============================================================
 \subsubsection{Network G --- Local SMB Host (172.20.10.3)}
 % ============================================================
-Network G targeted the scanning host's own Wi-Fi adapter (172.20.10.3), which exposes Windows file-sharing services on the local subnet. The platform detected \textbf{3 open ports}: Port 135 (RPC), Port 139 (NetBIOS/SMB exploitation vector), and Port 445 (SMB, ransomware propagation vector). Six CVEs were correlated. The heuristic engine classified 2 Critical nodes and 1 High Risk node, with 3 inter-service connections and \textbf{0 lateral paths}---reflecting that while individual services carry high CVE severity, the absence of pivotable paths limits compounded topological risk.
+Network G targeted the scanning host's own Wi-Fi adapter (172.20.10.3), which exposes Windows file-sharing services on the local subnet. The system found \textbf{3 open ports}: Port 135 (RPC), Port 139 (NetBIOS/SMB exploitation vector), and Port 445 (SMB, ransomware propagation vector). Six CVEs were correlated. The heuristic engine classified 2 Critical nodes and 1 High Risk node, with 3 inter-service connections and \textbf{0 lateral paths}---reflecting that while individual services carry high CVE severity, the absence of pivotable paths limits compounded topological risk.
 
 The NES engine computed a score of \textbf{50 (Medium)}, consistent with Network C (also 3 services, 0 lateral paths). The attack graph rendered a triangle topology: RPC $\leftrightarrow$ NetBIOS $\leftrightarrow$ SMB, all classified as Entry nodes with RPC as the pivot gateway. Two MITRE techniques were mapped: T1136 (Create Account, associated with NetBIOS exploitation) and T1210 (Exploitation of Remote Services, associated with SMB lateral movement).
 
@@ -559,7 +559,7 @@ MITRE Techniques Mapped & 2 (T1136, T1210) \\
 % ============================================================
 Network H targeted \texttt{8.8.8.8}, a globally distributed anycast public DNS resolver operated by Google, to assess NET\_SCAN's behavior against a well-known, operationally hardened internet host. This scan produced the \textbf{High} risk tier---NES = \textbf{60}---making it the only environment in the test suite to occupy the High band (60--80), positioned between the Medium environments (Networks C and G, NES = 50) and the Critical environments (Networks E and F).
 
-The platform identified \textbf{4 open services}: Port 21 (FTP), Port 53 (DNS), Port 443 (HTTPS, returning HTTP/400 Bad Request), and Port 853 (DNS-over-TLS). Six CVEs were enriched from NVD. The attack graph rendered 1 Critical node, 3 High Risk nodes, \textbf{2 lateral paths}, and \textbf{3 inter-node connections}.
+The system identify \textbf{4 open services}: Port 21 (FTP), Port 53 (DNS), Port 443 (HTTPS, returning HTTP/400 Bad Request) and Port 853 (DNS-over-TLS). Six CVEs were enriched from NVD. The attack graph rendered 1 Critical node, 3 High Risk nodes, \textbf{2 lateral paths}, and \textbf{3 inter-node connections}.
 
 \begin{figure}[htbp]
 \centerline{
@@ -739,23 +739,20 @@ NET\_SCAN works at the discovery layer. It finds open ports, looks up bugs, and 
     \item \textbf{Traffic Validation:} Wireshark collects live network traffic of flagged interfaces, which helps in verifying whether vulnerable servies transmit any unencrypted credentials/ sensitive data. 
     \item \textbf{Lateral Movement Confirmation:} By applying dis-
 play filters targeting the specific port pairs identified in
-NET SCAN’s attack chains (e.g., tcp.port==21 &&
-tcp.port==22 for an FTP→SSH pivot), analysts can
+NET SCANâ€™s attack chains (e.g., tcp.port==21 &&
+tcp.port==22 for an FTPâ†’SSH pivot), analysts can
 confirm or refute whether inter-service communication
 patterns match the predicted lateral movement paths.
-    \item \textbf{Protocol-Level Anomaly Detection:} Wireshark’s pro-
-tocol dissectors reveal malformed packets, unexpected
-protocol negotiations, and banner anomalies that static
-port scanning cannot detect \cite{sanders2017}.
+    \item \textbf{Protocol-Level Anomaly Detection:} Wireshark helps us to spot strange or incorrect packets, unusual protocol behavior, and the odd service responses that normal port scanning might miss during scanning \cite{sanders2017}.
 \end{enumerate}
 
 \subsection{Remediation Workflow}
 The proposed remediation workflow operates in four phases,
-integrating NET SCAN’s output with Wireshark-driven validation:
+integrating NET SCANâ€™s output with Wireshark-driven validation:
 \subsubsection{Phase 1: Triage via NES Prioritization}
 Defenders begin
-by reviewing NET SCAN’s NES scores and attack chain enumeration. Networks scoring Critical (NES ≥ 81) are prioritized for immediate Wireshark capture sessions. The What-If
-Engine’s per-port NES impact scores guide which services to
+by reviewing NET SCANâ€™s NES scores and attack chain enumeration. Networks scoring Critical (NES â‰¥ 81) are prioritized for immediate Wireshark capture sessions. The What-If
+Engineâ€™s per-port NES impact scores guide which services to
 inspect first.
 
 \subsubsection{Phase 2: Live Traffic Capture \& Inspection}
@@ -765,8 +762,8 @@ is deployed on the network segment under investigation. Capture filters are conf
 Analysts inspect:
 \begin{itemize}
     \item \textbf{Unencrypted credential transmission} on FTP (Port 21)
-and HTTP (Port 80) using Wireshark’s “Follow TCP
-Stream” feature.
+and HTTP (Port 80) using Wiresharkâ€™s â€œFollow TCP
+Streamâ€ feature.
     \item \textbf{DNS query patterns}* on Port 53 to detect potential exfiltration channels (aligned with MITRE T1048).
     \item \textbf{SMB/NetBIOS handshakes} * on Ports 139/445 to identify
 unauthorized file-sharing sessions or lateral movement attempts (aligned with MITRE T1210).
@@ -784,7 +781,7 @@ Based on the combined evidence from NET\_SCAN's What-If analysis and Wireshark's
 \end{itemize}
 
 \subsubsection{Phase 4: Post-Remediation Verification}
-After remediation, the defender executes a second NET\_SCAN pass on the hardened network. The updated NES score is compared against the pre-remediation baseline to quantify improvement. Simultaneously, a Wireshark capture session verifies that the blocked ports no longer carry traffic and that protocol upgrades are functioning correctly. This closed-loop validation ensures that remediation actions have the intended effect and no residual attack surfaces remain.
+After remediation, the defender executes a second NET\_SCAN pass on the hardened network. The updated NES score is compared against the pre-remediation baseline to quantify improvement. Simultaneously, a Wireshark capture session verifies that the blocked ports no longer carry traffic and that protocol upgrades are functioning correctly. This step ensures that the implemented fixes are effective and no security weaknesses are left in the system.
 
 \subsection{Illustrative Example: Network G Remediation}
 Consider Network G (172.20.10.3, NES = 50, Medium), which exposed Ports 135 (RPC), 139 (NetBIOS), and 445 (SMB). The remediation workflow proceeds as follows:

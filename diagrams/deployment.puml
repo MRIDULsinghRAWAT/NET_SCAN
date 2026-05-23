@@ -1,0 +1,64 @@
+@startuml Deployment_Diagram
+title NET_SCAN — Deployment Diagram
+skinparam node {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+}
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #1565C0
+}
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #E65100
+}
+
+node "Client Machine\n(Browser)" as client {
+  component "React 18\nFrontend" as react
+  component "HTML5 Canvas\n(Force-Directed Graph)" as canvas
+  component "SSE EventSource\nClient" as sseclient
+}
+
+node "Server Machine\n(localhost:5000)" as server {
+  component "Flask REST API\n(main.py)" as flask
+  component "TCP Scanner\n(engine.py)" as engine
+  component "SSE Streamer\n(streamer.py)" as streamer
+  component "Risk Analyzer\n(analyzer.py)" as analyzer
+  component "Graph Generator\n(graph_gen.py)" as graphgen
+
+  component "BFS Engine" as bfs
+  component "Dijkstra Engine" as dijkstra
+  component "NES Calculator" as nes
+  component "What-If Engine" as whatif
+}
+
+node "External Services" as external {
+  database "NVD API v2.0\n(nvd.nist.gov)" as nvd
+}
+
+node "Target Network" as target {
+  component "Target Host(s)\n(Scanned IPs)" as hosts
+}
+
+cloud "Network\n(TCP/IP)" as network
+
+react --> flask : "HTTP POST\n/api/start-scan"
+sseclient --> streamer : "SSE GET\n/api/scan-stream"
+streamer --> react : "Server-Sent Events\n(live results)"
+react --> canvas : "Renders graph"
+
+flask --> engine : "Triggers scan"
+engine --> hosts : "TCP SYN\n(ports 1-1024)"
+hosts --> engine : "SYN-ACK / RST\n+ banners"
+engine --> analyzer : "Port + banner data"
+analyzer --> nvd : "HTTPS\nCVE queries"
+nvd --> analyzer : "CVE IDs +\nCVSS scores"
+analyzer --> graphgen : "Classified services"
+graphgen --> bfs : "Graph"
+graphgen --> dijkstra : "Graph"
+graphgen --> nes : "Graph + CVEs"
+graphgen --> whatif : "Graph snapshot"
+graphgen --> streamer : "Final results"
+
+engine ..> network
+@enduml

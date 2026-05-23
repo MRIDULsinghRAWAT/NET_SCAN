@@ -1,0 +1,49 @@
+@startuml 3_Tier_Architecture
+title NET_SCAN — 3-Tier Architecture Diagram
+skinparam packageStyle rectangle
+skinparam componentStyle uml2
+
+package "Presentation Tier (Client Layer)" #E8F4FD {
+  component "React 18 Frontend" as react
+  component "HTML5 Canvas (Graph UI)" as canvas
+  component "SSE Client (Live Updates)" as sse
+}
+
+package "Application Tier (Business Logic Layer)" #FFF3E0 {
+  component "Flask REST API" as flask
+  component "TCP Scanning Engine" as scanner
+  component "SSE Streamer" as streamer
+  
+  package "Analysis Modules" #FFFFFF {
+    component "Vulnerability Analyzer" as analyzer
+    component "Critical Paths Engine\n(BFS & Dijkstra)" as paths
+    component "NES Calculator" as nes
+    component "What-If Simulator" as whatif
+  }
+}
+
+package "Data / External Tier (Data Layer)" #E8F5E9 {
+  database "National Vulnerability\nDatabase (NVD API v2.0)" as nvd
+  node "Target Network Environment" as target
+}
+
+' Relationships
+react -down-> flask : HTTP POST (Start Scan)
+sse -down-> streamer : HTTP GET (Subscribe)
+streamer -up-> react : Server-Sent Events
+
+flask -down-> scanner : Initialize
+scanner -down-> target : TCP SYN (Ports 1-1024)
+target -up-> scanner : SYN-ACK / RST Banners
+
+scanner -right-> analyzer : Raw Port Data
+analyzer -down-> nvd : CVE Queries (HTTPS)
+nvd -up-> analyzer : JSON (CVE IDs, CVSS)
+
+analyzer -down-> paths : Classified Nodes
+paths -right-> nes : Attack Paths
+nes -up-> whatif : Base NES Score
+whatif -up-> streamer : Graph Data & Risk Metrics
+streamer -up-> canvas : Render Live Updates
+
+@enduml

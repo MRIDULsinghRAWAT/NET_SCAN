@@ -1,0 +1,67 @@
+@startuml Sequence_Diagram
+title NET_SCAN — Sequence Diagram
+skinparam participant {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+}
+skinparam sequence {
+  ArrowColor #1565C0
+  LifeLineBorderColor #2196F3
+}
+
+actor User
+participant "React\nFrontend" as FE
+participant "Flask API\n(main.py)" as API
+participant "TCP Scanner\n(engine.py)" as Scanner
+participant "Risk Analyzer\n(analyzer.py)" as Analyzer
+participant "NVD API v2.0" as NVD
+participant "Graph Generator\n(graph_gen.py)" as Graph
+participant "SSE Streamer\n(streamer.py)" as SSE
+
+User -> FE : Enter target IP, click "Scan"
+activate FE
+FE -> API : POST /api/start-scan\n{ip, ports, timeout}
+activate API
+API -> Scanner : Initialize scan threads
+activate Scanner
+
+loop For each port (1-1024)
+  Scanner -> Scanner : TCP connect_ex()\n+ banner grab
+  Scanner -> SSE : Push port_discovered event
+  SSE --> FE : SSE event (port data)
+end
+
+Scanner -> Analyzer : Pass open ports + banners
+deactivate Scanner
+activate Analyzer
+
+Analyzer -> NVD : Query CVEs for each service
+activate NVD
+NVD --> Analyzer : CVE IDs + CVSS 3.1 scores
+deactivate NVD
+
+Analyzer -> Analyzer : Map MITRE ATT&CK techniques
+Analyzer -> Analyzer : Classify Kill Chain roles\n(Entry / Pivot / Target)
+
+Analyzer -> Graph : Build attack graph
+deactivate Analyzer
+activate Graph
+
+Graph -> Graph : Run BFS (shortest paths)
+Graph -> Graph : Run Dijkstra (deadliest paths)
+Graph -> Graph : Calculate NES score (0-100)
+Graph -> Graph : Compute What-If scenarios
+
+Graph -> SSE : Push complete results
+deactivate Graph
+SSE --> FE : SSE event\n(graph + NES + paths + chains)
+
+FE -> FE : Render force-directed\nattack graph
+
+deactivate API
+
+User -> FE : Click What-If on a port
+FE -> FE : Recalculate NES locally\nShow delta reduction
+
+deactivate FE
+@enduml

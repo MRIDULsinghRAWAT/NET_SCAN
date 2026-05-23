@@ -1,0 +1,45 @@
+@startuml UseCase_Diagram
+title NET_SCAN — Use Case Diagram
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #E8F4FD
+  BorderColor #2196F3
+}
+
+actor "User /\nSecurity Engineer" as User
+
+rectangle "NET_SCAN System" {
+  usecase "Start Network Scan" as UC1
+  usecase "Configure Port Range\n& Timeout" as UC1a
+  usecase "Specify Target IP" as UC1b
+  usecase "View Live Attack Graph" as UC2
+  usecase "Browse CVE Database" as UC3
+  usecase "View MITRE ATT&CK\nTechniques" as UC4
+  usecase "Analyze Critical Paths" as UC5
+  usecase "View Shortest Paths (BFS)" as UC5a
+  usecase "View Deadliest Paths\n(Dijkstra)" as UC5b
+  usecase "Run What-If\nMitigation Simulation" as UC6
+  usecase "Simulate Port\nDecommission" as UC6a
+  usecase "View NES Reduction" as UC6b
+  usecase "View Network\nExposure Score" as UC7
+  usecase "View Attack Chains" as UC8
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+
+UC1 ..> UC1a : <<include>>
+UC1 ..> UC1b : <<include>>
+UC5 ..> UC5a : <<include>>
+UC5 ..> UC5b : <<include>>
+UC6 ..> UC6a : <<include>>
+UC6 ..> UC6b : <<include>>
+@enduml
