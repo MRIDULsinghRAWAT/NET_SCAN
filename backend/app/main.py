@@ -33,6 +33,12 @@ scan_state = {
 }
 
 
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for Railway"""
+    return jsonify({"status": "ok", "message": "NET_SCAN backend is running"}), 200
+
+
 @app.route('/api/start-scan', methods=['GET', 'POST'])
 def start_scan():
     """
