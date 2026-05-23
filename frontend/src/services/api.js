@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Flask backend runs on port 5000
-const API_BASE_URL = 'http://127.0.0.1:5000';
+// Flask backend URL - switch between local and production
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000';
 
 /**
  * Start a new scan with given parameters.
