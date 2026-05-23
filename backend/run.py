@@ -11,4 +11,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 from app.main import app
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug, port=port, host='0.0.0.0')
