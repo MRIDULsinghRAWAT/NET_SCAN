@@ -29,6 +29,18 @@ Network security scans usually produce long text reports listing isolated vulner
 
 ---
 
+## Screenshots
+
+### Home Page - Graph-Intelligent Attack Path Analyzer
+![NET_SCAN Home Page](figures/home-page.png)
+The landing page features the main title with "GRAPH-INTELLIGENT ATTACK PATH ANALYZER", dynamic IP graph background, and quick access buttons to Information and Vulnerability scanning modules.
+
+### Advanced Scanner Engine
+![Advanced Scanner Engine](figures/scanner-dashboard.png)
+The scanner dashboard allows users to enter target IP addresses (with port range configuration), and launch system scans with the "LAUNCH SYSTEM SCAN" button. Real-time progress updates display in the SCAN RESULTS section.
+
+---
+
 ## Project Structure
 
 ```text
