@@ -13,4 +13,4 @@ from app.main import app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-    app.run(debug=debug, port=port, host='0.0.0.0')
+    app.run(debug=debug, port=port, host='0.0.0.0', threaded=True)
