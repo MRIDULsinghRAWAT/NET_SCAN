@@ -4,7 +4,6 @@
 ![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?logo=react)
 ![Flask](https://img.shields.io/badge/Flask-Backend-000000.svg?logo=flask)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python)
-![Google Auth](https://img.shields.io/badge/Google_OAuth-Sign_In-4285F4.svg?logo=google)
 
 **NET_SCAN** is a real-time network intelligence platform that goes beyond traditional port scanning tools like Nmap or Nessus. It automatically graphs distributed attack paths, showing how adversaries can chain vulnerabilities together across network infrastructures using **Cyber Kill Chain Modeling** and **MITRE ATT&CK Mapping**.
 
