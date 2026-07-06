@@ -14,10 +14,16 @@ function Contact() {
       githubHandle: '@Akshat-Joshi0',
       email: 'akshatjoshi7218@gmail.com',
     },
+    {
+      name: 'Shiva Jakhad',
+      github: 'https://github.com/Shiva0454',
+      githubHandle: '@Shiva0454',
+      email: 's19167813@gmail.com',
+    },
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6 py-20">
+    <div className="w-full max-w-6xl mx-auto px-6 py-20">
       {/* Header */}
       <div className="text-center mb-16">
         <h1
@@ -40,7 +46,7 @@ function Contact() {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-3 gap-8">
         {team.map((member, idx) => (
           <div
             key={idx}

@@ -136,6 +136,7 @@ Results are saved to `validation/results/run_X/netscan/`.
 |------------|--------|-------|
 | Mridul Singh Rawat | [@MRIDULsinghRAWAT](https://github.com/MRIDULsinghRAWAT) | mridulsinghrawat31@gmail.com |
 | Akshat Joshi | [@Akshat-Joshi0](https://github.com/Akshat-Joshi0) | akshatjoshi7218@gmail.com |
+| Shiva Jakhad | [@Shiva0454](https://github.com/Shiva0454) | s19167813@gmail.com |
 
 ---
 
