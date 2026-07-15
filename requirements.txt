@@ -4,3 +4,5 @@ flasgger>=0.9.7.1
 fpdf2>=2.7.0
 gunicorn>=21.0.0
 python-dotenv>=1.0.0
+eventlet
+flask-socketio
